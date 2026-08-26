@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Burrito FlowOS — Login</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+
+    .login-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .logo .emoji { font-size: 56px; display: block; margin-bottom: 8px; }
+    .logo h1 { color: #fff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { color: #e07b39; }
+    .logo p { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 4px; }
+
+    .form-group { margin-bottom: 20px; }
+    label { display: block; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input:focus {
+      border-color: #e07b39;
+      background: rgba(255,255,255,0.12);
+    }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e07b39, #c0551f);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+    .btn:hover  { opacity: 0.9; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .alert.error   { background: rgba(220,53,69,0.2);  border: 1px solid rgba(220,53,69,0.5);  color: #ff6b7a; }
+    .alert.success { background: rgba(40,167,69,0.2);   border: 1px solid rgba(40,167,69,0.5);  color: #6ee888; }
+
+    .hint {
+      text-align: center;
+      color: rgba(255,255,255,0.35);
+      font-size: 12px;
+      margin-top: 24px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="logo">
+      <span class="emoji">🌯</span>
+      <h1>Burrito <span>FlowOS</span></h1>
+      <p>Sistema de Gestión de Ventas e Insumos</p>
+    </div>
+
+    <div class="alert" id="alert"></div>
+
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" placeholder="admin@burritoflowos.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+
+    <button class="btn" id="btnLogin" onclick="login()">Iniciar sesión</button>
+
+    <p class="hint">
+      Demo admin: admin@burritoflowos.com / Admin123!<br>
+      Demo cajero: cajero@burritoflowos.com / Cajero123!
+    </p>
+  </div>
+
+  <script>
+    // Redirigir si ya está logueado
+    if (localStorage.getItem('bflow_token')) {
+      window.location.href = '/dashboard.html';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
+    });
+
+    function showAlert(msg, type) {
+      const el = document.getElementById('alert');
+      el.textContent = msg;
+      el.className   = `alert ${type}`;
+      el.style.display = 'block';
+    }
+
+    async function login() {
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('btnLogin');
+
+      if (!email || !password) {
+        return showAlert('Por favor completa todos los campos.', 'error');
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Iniciando sesión...';
+
+      try {
+        const res  = await fetch('/api/v1/auth/login', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error?.mensaje || 'Error al iniciar sesión.');
+        }
+
+        localStorage.setItem('bflow_token',   data.token);
+        localStorage.setItem('bflow_usuario',  JSON.stringify(data.usuario));
+        showAlert('¡Bienvenido! Redirigiendo...', 'success');
+        setTimeout(() => window.location.href = '/dashboard.html', 800);
+      } catch (err) {
+        showAlert(err.message, 'error');
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Iniciar sesión';
+      }
+    }
+  </script>
+</body>
+</html>

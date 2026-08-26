@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Burrito FlowOS — Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0f1117;
+      --surface:    #1a1d27;
+      --surface2:   #22263a;
+      --border:     rgba(255,255,255,0.08);
+      --orange:     #e07b39;
+      --orange-dk:  #c0551f;
+      --blue:       #3b82f6;
+      --green:      #22c55e;
+      --red:        #ef4444;
+      --yellow:     #f59e0b;
+      --text:       #e2e8f0;
+      --text-muted: rgba(255,255,255,0.45);
+      --sidebar-w:  240px;
+    }
+
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+    /* ── SIDEBAR ─────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w); min-height: 100vh; background: var(--surface);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-logo span { font-size: 28px; }
+    .sidebar-logo h2 { font-size: 16px; font-weight: 700; color: #fff; }
+    .sidebar-logo h2 em { color: var(--orange); font-style: normal; }
+    .sidebar-logo p { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+
+    .nav { flex: 1; padding: 12px 0; }
+    .nav-section { padding: 16px 20px 6px; font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: 500;
+      color: var(--text-muted); transition: all 0.15s; border-left: 3px solid transparent;
+    }
+    .nav-item:hover  { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-item.active { color: var(--orange); background: rgba(224,123,57,0.08); border-left-color: var(--orange); }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 20px; border-top: 1px solid var(--border);
+    }
+    .user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange), var(--orange-dk));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .user-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+    .user-role  { font-size: 11px; color: var(--text-muted); }
+    .btn-logout {
+      width: 100%; padding: 8px; background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2); border-radius: 8px;
+      color: #ef4444; font-size: 13px; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.2); }
+
+    /* ── MAIN ────────────────────────────── */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 16px 28px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .topbar p  { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .topbar-actions { display: flex; gap: 8px; }
+
+    .content { padding: 28px; flex: 1; }
+
+    /* ── CARDS / STATS ───────────────────── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 20px; display: flex; align-items: center; gap: 16px;
+    }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
+    }
+    .stat-icon.orange { background: rgba(224,123,57,0.15); }
+    .stat-icon.blue   { background: rgba(59,130,246,0.15); }
+    .stat-icon.green  { background: rgba(34,197,94,0.15);  }
+    .stat-icon.red    { background: rgba(239,68,68,0.15);  }
+    .stat-value { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── TABLE ───────────────────────────── */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .card-header {
+      padding: 18px 22px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .card-header h3 { font-size: 15px; font-weight: 600; }
+    .card-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 600;
+      color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02);
+    }
+    td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .badge {
+      display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .badge.green  { background: rgba(34,197,94,0.15);  color: #4ade80; }
+    .badge.red    { background: rgba(239,68,68,0.15);  color: #f87171; }
+    .badge.orange { background: rgba(224,123,57,0.15); color: #fb923c; }
+    .badge.blue   { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .badge.gray   { background: rgba(255,255,255,0.08);color: var(--text-muted); }
+
+    /* ── BUTTONS ─────────────────────────── */
+    .btn {
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary   { background: var(--orange); color: #fff; }
+    .btn-primary:hover { background: var(--orange-dk); }
+    .btn-secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+    .btn-danger    { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+    .btn-danger:hover { background: rgba(239,68,68,0.25); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-icon { width: 30px; height: 30px; padding: 0; justify-content: center; }
+
+    /* ── SEARCH / INPUT ──────────────────── */
+    .input {
+      padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 13px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .input:focus { border-color: var(--orange); }
+    .input::placeholder { color: var(--text-muted); }
+    .input-lg { padding: 11px 14px; font-size: 15px; border-radius: 10px; }
+    .input-full { width: 100%; }
+
+    /* ── MODAL ───────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .overlay.show { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+      transform: translateY(20px); transition: transform 0.2s;
+    }
+    .overlay.show .modal { transform: translateY(0); }
+    .modal-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 700; }
+    .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; }
+
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* ── TOAST ───────────────────────────── */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 18px; font-size: 13px; display: flex; align-items: center; gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4); min-width: 260px; max-width: 360px;
+      animation: slideIn 0.25s ease;
+    }
+    .toast.success { border-color: rgba(34,197,94,0.4);  }
+    .toast.error   { border-color: rgba(239,68,68,0.4);  }
+    .toast.warning { border-color: rgba(245,158,11,0.4); }
+    @keyframes slideIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: none; } }
+
+    /* ── EMPTY STATE ─────────────────────── */
+    .empty { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+    .empty span { font-size: 40px; display: block; margin-bottom: 10px; }
+    .empty p { font-size: 14px; }
+
+    /* ── LOADER ──────────────────────────── */
+    .loader { text-align: center; padding: 32px; color: var(--text-muted); font-size: 14px; }
+
+    /* ── PAGES ───────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── ALERT (inline) ──────────────────── */
+    .alert-inline {
+      padding: 10px 14px; border-radius: 8px; font-size: 13px;
+      display: none; margin-bottom: 4px;
+    }
+    .alert-inline.error   { background: rgba(239,68,68,0.15);  border: 1px solid rgba(239,68,68,0.3);  color: #f87171; }
+    .alert-inline.success { background: rgba(34,197,94,0.15);  border: 1px solid rgba(34,197,94,0.3);  color: #4ade80; }
+    .alert-inline.warning { background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ─────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span>🌯</span>
+    <div>
+      <h2>Burrito <em>FlowOS</em></h2>
+      <p>Sistema de Gestión</p>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="icon">📊</span> Dashboard
+    </div>
+
+    <div class="nav-section">Operaciones</div>
+    <div class="nav-item" onclick="showPage('ventas')">
+      <span class="icon">🧾</span> Ventas
+    </div>
+    <div class="nav-item" onclick="showPage('insumos')">
+      <span class="icon">📦</span> Inventario
+    </div>
+    <div class="nav-item" onclick="showPage('recetas')">
+      <span class="icon">📋</span> Recetas
+    </div>
+
+    <div class="nav-section admin-only">Administración</div>
+    <div class="nav-item admin-only" onclick="showPage('usuarios')">
+      <span class="icon">👥</span> Usuarios
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar" id="userAvatar">?</div>
+      <div>
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">🚪 Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ──────────────────────────────────── -->
+<main class="main">
+
+  <!-- ── TOPBAR ── -->
+  <div class="topbar">
+    <div>
+      <h1 id="pageTitle">Dashboard</h1>
+      <p id="pageSubtitle">Resumen general del sistema</p>
+    </div>
+    <div class="topbar-actions" id="topbarActions"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════════════ DASHBOARD ════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon orange">💰</div>
+          <div>
+            <div class="stat-value" id="stat-ventas">—</div>
+            <div class="stat-label">Ventas del día</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🌯</div>
+          <div>
+            <div class="stat-value" id="stat-burritos">—</div>
+            <div class="stat-label">Burritos vendidos</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon blue">📦</div>
+          <div>
+            <div class="stat-value" id="stat-insumos">—</div>
+            <div class="stat-label">Insumos en stock</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red">⚠️</div>
+          <div>
+            <div class="stat-value" id="stat-alertas">—</div>
+            <div class="stat-label">Alertas de stock</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="card">
+          <div class="card-header"><h3>⚠️ Insumos con stock bajo</h3></div>
+          <div id="tabla-alertas"><div class="loader">Cargando…</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>🧾 Últimas ventas</h3></div>
+          <div id="tabla-ultimas-ventas"><div class="loader">Cargando…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ VENTAS ════════════ -->
+    <div class="page" id="page-ventas">
+      <div style="display:grid; grid-template-columns:340px 1fr; gap:20px; align-items:start;">
+
+        <!-- Panel registrar venta -->
+        <div class="card">
+          <div class="card-header"><h3>➕ Registrar Venta</h3></div>
+          <div class="modal-body">
+            <div class="alert-inline" id="venta-alert"></div>
+            <div class="form-group">
+              <label>Tipo de burrito</label>
+              <select class="input input-full" id="venta-burrito">
+                <option value="">Seleccionar receta…</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Cantidad</label>
+              <input class="input input-full" type="number" id="venta-cantidad" min="1" value="1">
+            </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" id="venta-combo" style="margin-right:6px">
+                ¿Es combo? (+15%)
+              </label>
+            </div>
+            <div style="background:var(--surface2); border-radius:10px; padding:14px; font-size:13px;" id="venta-preview">
+              <div style="color:var(--text-muted);">Selecciona un burrito para ver el precio</div>
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="registrarVenta()">🧾 Confirmar Venta</button>
+          </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📋 Historial de Ventas</h3>
+            <div class="card-actions">
+              <input class="input" type="date" id="filtro-desde" style="width:135px">
+              <input class="input" type="date" id="filtro-hasta" style="width:135px">
+              <button class="btn btn-secondary btn-sm" onclick="cargarVentas()">🔍 Filtrar</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Burrito</th><th>Cant.</th><th>Combo</th>
+                <th>Total</th><th>Cajero</th><th>Fecha</th><th>Acción</th>
+              </tr></thead>
+              <tbody id="tabla-ventas"><tr><td colspan="7"><div class="loader">Cargando…</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ INSUMOS ════════════ -->
+    <div class="page" id="page-insumos">
+      <div class="card">
+        <div class="card-header">
+          <h3>📦 Inventario de Insumos</h3>
+          <div class="card-actions">
+            <input class="input" placeholder="🔍 Buscar insumo…" id="buscar-insumo" oninput="filtrarInsumos()" style="width:200px">
+            <button class="btn btn-secondary btn-sm" onclick="cargarInsumos()">↺ Actualizar</button>
+            <button class="btn btn-primary btn-sm admin-only" onclick="abrirModalInsumo()">➕ Nuevo insumo</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Nombre</th><th>Cantidad</th><th>Unidad</th>
+              <th>Stock mín.</th><th>Estado</th><th class="admin-only">Acciones</th>
+            </tr></thead>
+            <tbody id="tabla-insumos"><tr><td colspan="6"><div class="loader">Cargando…</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ RECETAS ════════════ -->
+    <div class="page" id="page-recetas">
+      <div class="card">
+        <div class="card-header">
+          <h3>📋 Recetas del Menú</h3>
+          <div class="card-actions">
+            <button class="btn btn-secondary btn-sm" onclick="cargarRecetas()">↺ Actualizar</button>
+            <button class="btn btn-primary btn-sm admin-only" onclick="abrirModalReceta()">➕ Nueva receta</button>
+          </div>
+        </div>
+        <div id="recetas-grid" style="padding:20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;">
+          <div class="loader">Cargando…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════ USUARIOS ════════════ -->
+    <div class="page admin-only" id="page-usuarios">
+      <div class="card">
+        <div class="card-header">
+          <h3>👥 Gestión de Usuarios</h3>
+          <button class="btn btn-primary btn-sm" onclick="abrirModalUsuario()">➕ Nuevo usuario</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th>
+            </tr></thead>
+            <tbody id="tabla-usuarios"><tr><td colspan="5"><div class="loader">Cargando…</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- ════════ MODAL INSUMO ════════ -->
+<div class="overlay" id="modal-insumo">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-insumo-title">Nuevo Insumo</h3>
+      <button class="btn btn-icon btn-secondary" onclick="cerrarModal('modal-insumo')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="insumo-id">
+      <div class="form-group">
+        <label>Nombre del insumo</label>
+        <input class="input input-full" id="insumo-nombre" placeholder="Ej: Pierna de cerdo">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cantidad actual</label>
+          <input class="input input-full" type="number" id="insumo-cantidad" min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Unidad de medida</label>
+          <select class="input input-full" id="insumo-unidad">
+            <option value="gr">gr — gramos</option>
+            <option value="kg">kg — kilogramos</option>
+            <option value="un">un — unidades</option>
+            <option value="lt">lt — litros</option>
+            <option value="ml">ml — mililitros</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Stock mínimo (alerta)</label>
+        <input class="input input-full" type="number" id="insumo-stock-min" min="0" placeholder="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="cerrarModal('modal-insumo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarInsumo()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL RECETA ════════ -->
+<div class="overlay" id="modal-receta">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-header">
+      <h3 id="modal-receta-title">Nueva Receta</h3>
+      <button class="btn btn-icon btn-secondary" onclick="cerrarModal('modal-receta')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="receta-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre del burrito</label>
+          <input class="input input-full" id="receta-nombre" placeholder="Ej: Burrito Sabanero">
+        </div>
+        <div class="form-group">
+          <label>Precio (COP)</label>
+          <input class="input input-full" type="number" id="receta-precio" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <input class="input input-full" id="receta-descripcion" placeholder="Descripción del burrito">
+      </div>
+      <div class="form-group">
+        <label>Ingredientes <span style="color:var(--text-muted); font-size:11px">(insumo · cantidad · unidad)</span></label>
+        <div id="ingredientes-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;"></div>
+        <button class="btn btn-secondary btn-sm" onclick="addIngrediente()">➕ Añadir ingrediente</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="cerrarModal('modal-receta')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarReceta()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL USUARIO ════════ -->
+<div class="overlay" id="modal-usuario">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-usuario-title">Nuevo Usuario</h3>
+      <button class="btn btn-icon btn-secondary" onclick="cerrarModal('modal-usuario')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="usuario-id">
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input class="input input-full" id="usuario-nombre" placeholder="Karen Botero">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input class="input input-full" type="email" id="usuario-email" placeholder="usuario@burritoflowos.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contraseña <span id="pass-hint" style="color:var(--text-muted);font-size:10px">(obligatoria)</span></label>
+          <input class="input input-full" type="password" id="usuario-password" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select class="input input-full" id="usuario-rol">
+            <option value="cajero">Cajero</option>
+            <option value="administrador">Administrador</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="cerrarModal('modal-usuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarUsuario()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOASTS ── -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- ════════════════════════════════════════════ -->
+<script>
+/* ─── AUTH ─────────────────────────── */
+const token   = localStorage.getItem('bflow_token');
+const usuario = JSON.parse(localStorage.getItem('bflow_usuario') || 'null');
+
+if (!token || !usuario) {
+  window.location.href = '/';
+}
+
+const esAdmin = usuario?.rol === 'administrador';
+
+// Mostrar info del usuario
+document.getElementById('userAvatar').textContent = (usuario?.nombre || '?')[0].toUpperCase();
+document.getElementById('userName').textContent    = usuario?.nombre || '—';
+document.getElementById('userRole').textContent    = usuario?.rol   || '—';
+
+// Ocultar elementos solo-admin si es cajero
+if (!esAdmin) {
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+}
+
+function logout() {
+  fetch('/api/v1/auth/logout', { method: 'POST', headers: authHeaders() }).finally(() => {
+    localStorage.clear();
+    window.location.href = '/';
+  });
+}
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+}
+
+/* ─── NAVEGACIÓN ────────────────────── */
+const pages = {
+  dashboard: { title: 'Dashboard',   sub: 'Resumen general del sistema',       load: loadDashboard },
+  ventas:    { title: 'Ventas',       sub: 'Registro e historial de ventas',    load: () => { cargarSelectRecetas(); cargarVentas(); } },
+  insumos:   { title: 'Inventario',   sub: 'Control de insumos y stock',        load: cargarInsumos   },
+  recetas:   { title: 'Recetas',      sub: 'Menú de burritos y sus recetas',    load: cargarRecetas   },
+  usuarios:  { title: 'Usuarios',     sub: 'Administración de accesos',         load: cargarUsuarios  },
+};
+
+let paginaActual = 'dashboard';
+let insumosCache = [];
+
+function showPage(id) {
+  if (!esAdmin && id === 'usuarios') return;
+  paginaActual = id;
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const el = document.getElementById(`page-${id}`);
+  if (el) el.classList.add('active');
+
+  const nav = [...document.querySelectorAll('.nav-item')].find(n => n.textContent.trim().toLowerCase().includes(pages[id]?.title.toLowerCase()));
+  if (nav) nav.classList.add('active');
+
+  document.getElementById('pageTitle').textContent    = pages[id]?.title || id;
+  document.getElementById('pageSubtitle').textContent = pages[id]?.sub   || '';
+
+  buildTopbarActions(id);
+  pages[id]?.load?.();
+}
+
+function buildTopbarActions(id) {
+  const c = document.getElementById('topbarActions');
+  c.innerHTML = '';
+}
+
+/* ─── API HELPER ────────────────────── */
+async function api(method, path, body = null) {
+  const opts = { method, headers: authHeaders() };
+  if (body) opts.body = JSON.stringify(body);
+  const res  = await fetch(`/api/v1${path}`, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.mensaje || 'Error desconocido');
+  return data;
+}
+
+/* ─── TOAST ─────────────────────────── */
+function toast(msg, type = 'success') {
+  const icons = { success: '✅', error: '❌', warning: '⚠️' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toasts').prepend(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+/* ─── MODAL HELPERS ─────────────────── */
+function abrirModal(id)  { document.getElementById(id).classList.add('show'); }
+function cerrarModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function formatCOP(n) {
+  return '$' + Number(n).toLocaleString('es-CO');
+}
+function formatFecha(str) {
+  return new Date(str).toLocaleString('es-CO', { dateStyle:'short', timeStyle:'short' });
+}
+
+/* ═══════ DASHBOARD ═══════ */
+async function loadDashboard() {
+  try {
+    const hoy = new Date().toISOString().split('T')[0];
+
+    const [insData, ventasData] = await Promise.all([
+      api('GET', '/insumos'),
+      esAdmin ? api('GET', `/ventas?desde=${hoy}&hasta=${hoy}`) : null
+    ]);
+
+    const alertas = insData.insumos.filter(i => i.alerta_stock);
+
+    document.getElementById('stat-insumos').textContent = insData.total;
+    document.getElementById('stat-alertas').textContent = alertas.length;
+
+    if (ventasData) {
+      const ventasHoy    = ventasData.ventas || [];
+      const totalHoy     = ventasHoy.reduce((s, v) => s + v.total, 0);
+      const burritosHoy  = ventasHoy.reduce((s, v) => s + v.cantidad, 0);
+      document.getElementById('stat-ventas').textContent   = formatCOP(totalHoy);
+      document.getElementById('stat-burritos').textContent = burritosHoy;
+
+      // Tabla últimas ventas
+      const tv = document.getElementById('tabla-ultimas-ventas');
+      if (ventasHoy.length === 0) {
+        tv.innerHTML = '<div class="empty"><span>🧾</span><p>Sin ventas hoy aún</p></div>';
+      } else {
+        tv.innerHTML = `<table><thead><tr><th>Burrito</th><th>Cant.</th><th>Total</th></tr></thead>
+          <tbody>${ventasHoy.slice(0,8).map(v => `
+            <tr>
+              <td>${v.tipo_burrito}</td>
+              <td>${v.cantidad}</td>
+              <td>${formatCOP(v.total)}</td>
+            </tr>`).join('')}
+          </tbody></table>`;
+      }
+    } else {
+      document.getElementById('stat-ventas').textContent   = '—';
+      document.getElementById('stat-burritos').textContent = '—';
+      document.getElementById('tabla-ultimas-ventas').innerHTML = '<div class="empty"><span>🔒</span><p>Solo para administradores</p></div>';
+    }
+
+    // Tabla alertas
+    const ta = document.getElementById('tabla-alertas');
+    if (alertas.length === 0) {
+      ta.innerHTML = '<div class="empty"><span>✅</span><p>Todo el inventario está bien</p></div>';
+    } else {
+      ta.innerHTML = `<table><thead><tr><th>Insumo</th><th>Actual</th><th>Mínimo</th></tr></thead>
+        <tbody>${alertas.slice(0,8).map(i => `
+          <tr>
+            <td>${i.nombre}</td>
+            <td style="color:var(--red)">${i.cantidad_actual} ${i.unidad_medida}</td>
+            <td style="color:var(--text-muted)">${i.stock_minimo} ${i.unidad_medida}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    }
+
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/* ═══════ VENTAS ═══════ */
+async function cargarSelectRecetas() {
+  try {
+    const data = await api('GET', '/recetas');
+    const sel  = document.getElementById('venta-burrito');
+    sel.innerHTML = '<option value="">Seleccionar receta…</option>' +
+      data.recetas.map(r => `<option value="${r._id}" data-precio="${r.precio}" data-nombre="${r.nombre}">${r.nombre} — ${formatCOP(r.precio)}</option>`).join('');
+    sel.onchange = actualizarPreviewVenta;
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function actualizarPreviewVenta() {
+  const sel      = document.getElementById('venta-burrito');
+  const opt      = sel.options[sel.selectedIndex];
+  const cant     = parseInt(document.getElementById('venta-cantidad').value) || 1;
+  const esCombo  = document.getElementById('venta-combo').checked;
+  const prev     = document.getElementById('venta-preview');
+
+  if (!sel.value) {
+    prev.innerHTML = '<div style="color:var(--text-muted)">Selecciona un burrito para ver el precio</div>';
+    return;
+  }
+
+  const precioBase = parseInt(opt.dataset.precio);
+  const precioUnit = esCombo ? Math.round(precioBase * 1.15) : precioBase;
+  const total      = precioUnit * cant;
+
+  prev.innerHTML = `
+    <div style="display:flex; justify-content:space-between; margin-bottom:8px">
+      <span style="color:var(--text-muted)">Precio unitario</span>
+      <span>${formatCOP(precioUnit)}${esCombo ? ' <span class="badge orange">+combo 15%</span>' : ''}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:16px; font-weight:700">
+      <span>Total</span>
+      <span style="color:var(--orange)">${formatCOP(total)}</span>
+    </div>`;
+}
+
+document.getElementById('venta-cantidad').addEventListener('input', actualizarPreviewVenta);
+document.getElementById('venta-combo').addEventListener('change', actualizarPreviewVenta);
+
+async function registrarVenta() {
+  const sel      = document.getElementById('venta-burrito');
+  const cant     = parseInt(document.getElementById('venta-cantidad').value);
+  const esCombo  = document.getElementById('venta-combo').checked;
+  const alrt     = document.getElementById('venta-alert');
+
+  if (!sel.value)   { alrt.textContent = 'Selecciona un burrito.'; alrt.className = 'alert-inline error'; alrt.style.display='block'; return; }
+  if (!cant || cant < 1) { alrt.textContent = 'La cantidad debe ser al menos 1.'; alrt.className = 'alert-inline error'; alrt.style.display='block'; return; }
+
+  alrt.style.display = 'none';
+  const nomBurrito = sel.options[sel.selectedIndex].dataset.nombre;
+
+  try {
+    const data = await api('POST', '/ventas', { tipo_burrito: nomBurrito, es_combo: esCombo, cantidad: cant });
+    toast(`✅ Venta registrada: ${formatCOP(data.total)}`, 'success');
+    sel.value = '';
+    document.getElementById('venta-cantidad').value = 1;
+    document.getElementById('venta-combo').checked  = false;
+    actualizarPreviewVenta();
+    cargarVentas();
+  } catch (e) {
+    alrt.textContent = e.message;
+    alrt.className   = 'alert-inline error';
+    alrt.style.display = 'block';
+  }
+}
+
+async function cargarVentas() {
+  if (!esAdmin) return;
+  const desde = document.getElementById('filtro-desde').value;
+  const hasta = document.getElementById('filtro-hasta').value;
+  let qs = '';
+  if (desde) qs += `&desde=${desde}`;
+  if (hasta) qs += `&hasta=${hasta}`;
+
+  document.getElementById('tabla-ventas').innerHTML = '<tr><td colspan="7"><div class="loader">Cargando…</div></td></tr>';
+  try {
+    const data = await api('GET', `/ventas?limit=50${qs}`);
+    const ventas = data.ventas || [];
+    if (!ventas.length) {
+      document.getElementById('tabla-ventas').innerHTML = '<tr><td colspan="7"><div class="empty"><span>🧾</span><p>Sin ventas en el período</p></div></td></tr>';
+      return;
+    }
+    document.getElementById('tabla-ventas').innerHTML = ventas.map(v => `
+      <tr>
+        <td><strong>${v.tipo_burrito}</strong></td>
+        <td>${v.cantidad}</td>
+        <td>${v.es_combo ? '<span class="badge orange">Combo</span>' : '<span class="badge gray">Normal</span>'}</td>
+        <td style="color:var(--green); font-weight:600">${formatCOP(v.total)}</td>
+        <td>${v.usuario?.nombre || '—'}</td>
+        <td style="color:var(--text-muted); font-size:12px">${formatFecha(v.createdAt)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="anularVenta('${v._id}')">Anular</button></td>
+      </tr>`).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function anularVenta(id) {
+  if (!confirm('¿Anular esta venta? Los insumos serán devueltos al inventario.')) return;
+  try {
+    await api('DELETE', `/ventas/${id}`);
+    toast('Venta anulada e insumos devueltos.', 'success');
+    cargarVentas();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/* ═══════ INSUMOS ═══════ */
+async function cargarInsumos() {
+  document.getElementById('tabla-insumos').innerHTML = '<tr><td colspan="6"><div class="loader">Cargando…</div></td></tr>';
+  try {
+    const data = await api('GET', '/insumos');
+    insumosCache = data.insumos || [];
+    renderInsumos(insumosCache);
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function filtrarInsumos() {
+  const q = document.getElementById('buscar-insumo').value.toLowerCase();
+  renderInsumos(insumosCache.filter(i => i.nombre.toLowerCase().includes(q)));
+}
+
+function renderInsumos(lista) {
+  if (!lista.length) {
+    document.getElementById('tabla-insumos').innerHTML = '<tr><td colspan="6"><div class="empty"><span>📦</span><p>Sin insumos encontrados</p></div></td></tr>';
+    return;
+  }
+  const cols = esAdmin ? 6 : 5;
+  document.getElementById('tabla-insumos').innerHTML = lista.map(i => `
+    <tr>
+      <td><strong>${i.nombre}</strong></td>
+      <td style="color:${i.alerta_stock ? 'var(--red)' : 'var(--green)'}; font-weight:600">
+        ${i.cantidad_actual}
+      </td>
+      <td><span class="badge gray">${i.unidad_medida}</span></td>
+      <td style="color:var(--text-muted)">${i.stock_minimo}</td>
+      <td>
+        ${i.alerta_stock
+          ? '<span class="badge red">⚠️ Stock bajo</span>'
+          : '<span class="badge green">✅ OK</span>'}
+      </td>
+      ${esAdmin ? `
+      <td style="display:flex; gap:6px">
+        <button class="btn btn-secondary btn-sm" onclick="editarInsumo('${i._id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarInsumo('${i._id}', '${i.nombre}')">🗑️</button>
+      </td>` : ''}
+    </tr>`).join('');
+}
+
+function abrirModalInsumo(id) {
+  document.getElementById('modal-insumo-title').textContent = 'Nuevo Insumo';
+  document.getElementById('insumo-id').value       = '';
+  document.getElementById('insumo-nombre').value   = '';
+  document.getElementById('insumo-cantidad').value = '';
+  document.getElementById('insumo-unidad').value   = 'gr';
+  document.getElementById('insumo-stock-min').value= '';
+  abrirModal('modal-insumo');
+}
+
+function editarInsumo(id) {
+  const ins = insumosCache.find(i => i._id === id);
+  if (!ins) return;
+  document.getElementById('modal-insumo-title').textContent = 'Editar Insumo';
+  document.getElementById('insumo-id').value        = ins._id;
+  document.getElementById('insumo-nombre').value    = ins.nombre;
+  document.getElementById('insumo-cantidad').value  = ins.cantidad_actual;
+  document.getElementById('insumo-unidad').value    = ins.unidad_medida;
+  document.getElementById('insumo-stock-min').value = ins.stock_minimo;
+  abrirModal('modal-insumo');
+}
+
+async function guardarInsumo() {
+  const id     = document.getElementById('insumo-id').value;
+  const body   = {
+    nombre:          document.getElementById('insumo-nombre').value.trim(),
+    cantidad_actual: parseFloat(document.getElementById('insumo-cantidad').value),
+    unidad_medida:   document.getElementById('insumo-unidad').value,
+    stock_minimo:    parseFloat(document.getElementById('insumo-stock-min').value) || 0
+  };
+  if (!body.nombre) return toast('El nombre es obligatorio.', 'error');
+
+  try {
+    if (id) {
+      await api('PUT', `/insumos/${id}`, body);
+      toast('Insumo actualizado.', 'success');
+    } else {
+      await api('POST', '/insumos', body);
+      toast('Insumo creado.', 'success');
+    }
+    cerrarModal('modal-insumo');
+    cargarInsumos();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function eliminarInsumo(id, nombre) {
+  if (!confirm(`¿Eliminar el insumo "${nombre}"?`)) return;
+  try {
+    await api('DELETE', `/insumos/${id}`);
+    toast('Insumo eliminado.', 'success');
+    cargarInsumos();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/* ═══════ RECETAS ═══════ */
+let insumosParaReceta = [];
+
+async function cargarRecetas() {
+  document.getElementById('recetas-grid').innerHTML = '<div class="loader">Cargando…</div>';
+  try {
+    const data = await api('GET', '/recetas');
+    const rec  = data.recetas || [];
+    if (!rec.length) {
+      document.getElementById('recetas-grid').innerHTML = '<div class="empty"><span>📋</span><p>Sin recetas aún</p></div>';
+      return;
+    }
+    document.getElementById('recetas-grid').innerHTML = rec.map(r => `
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:10px">
+          <div>
+            <div style="font-weight:700; font-size:15px">🌯 ${r.nombre}</div>
+            <div style="color:var(--text-muted); font-size:12px; margin-top:2px">${r.descripcion || ''}</div>
+          </div>
+          <div style="text-align:right; flex-shrink:0; margin-left:12px">
+            <div style="font-size:18px; font-weight:700; color:var(--orange)">${formatCOP(r.precio)}</div>
+            <div style="font-size:11px; color:var(--text-muted)">+15% combo: ${formatCOP(Math.round(r.precio*1.15))}</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:12px">
+          ${(r.ingredientes || []).map(ing => `
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); padding:4px 0; border-bottom:1px solid var(--border)">
+              <span>${ing.insumo?.nombre || '—'}</span>
+              <span style="color:var(--text)">${ing.cantidad} ${ing.unidad}</span>
+            </div>`).join('')}
+        </div>
+        ${esAdmin ? `
+        <div style="display:flex; gap:8px">
+          <button class="btn btn-danger btn-sm" style="flex:1" onclick="eliminarReceta('${r._id}', '${r.nombre}')">🗑️ Eliminar</button>
+        </div>` : ''}
+      </div>`).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function abrirModalReceta() {
+  document.getElementById('modal-receta-title').textContent = 'Nueva Receta';
+  document.getElementById('receta-id').value          = '';
+  document.getElementById('receta-nombre').value      = '';
+  document.getElementById('receta-precio').value      = '';
+  document.getElementById('receta-descripcion').value = '';
+  document.getElementById('ingredientes-list').innerHTML = '';
+
+  // Cargar insumos disponibles
+  try {
+    const data = await api('GET', '/insumos');
+    insumosParaReceta = data.insumos || [];
+  } catch (e) { insumosParaReceta = []; }
+
+  addIngrediente();
+  abrirModal('modal-receta');
+}
+
+function addIngrediente() {
+  const list = document.getElementById('ingredientes-list');
+  const idx  = list.children.length;
+  const opts = insumosParaReceta.map(i => `<option value="${i._id}">${i.nombre} (${i.unidad_medida})</option>`).join('');
+  const row  = document.createElement('div');
+  row.style.cssText = 'display:grid; grid-template-columns:1fr 80px 70px 28px; gap:6px; align-items:center';
+  row.innerHTML = `
+    <select class="input" style="font-size:12px" name="ing_insumo">${opts}</select>
+    <input class="input" type="number" min="0.01" step="0.01" placeholder="Cant." name="ing_cantidad">
+    <select class="input" style="font-size:12px" name="ing_unidad">
+      <option>gr</option><option>kg</option><option>un</option><option>lt</option><option>ml</option>
+    </select>
+    <button class="btn btn-danger btn-icon btn-sm" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(row);
+}
+
+async function guardarReceta() {
+  const id     = document.getElementById('receta-id').value;
+  const nombre = document.getElementById('receta-nombre').value.trim();
+  const precio = parseFloat(document.getElementById('receta-precio').value);
+  const desc   = document.getElementById('receta-descripcion').value.trim();
+
+  if (!nombre || !precio) return toast('Nombre y precio son obligatorios.', 'error');
+
+  const rows = document.getElementById('ingredientes-list').children;
+  const ingredientes = [...rows].map(row => ({
+    insumo:   row.querySelector('[name=ing_insumo]').value,
+    cantidad: parseFloat(row.querySelector('[name=ing_cantidad]').value),
+    unidad:   row.querySelector('[name=ing_unidad]').value
+  })).filter(i => i.insumo && i.cantidad > 0);
+
+  if (!ingredientes.length) return toast('Agrega al menos un ingrediente.', 'error');
+
+  try {
+    await api('POST', '/recetas', { nombre, precio, descripcion: desc, ingredientes });
+    toast('Receta creada.', 'success');
+    cerrarModal('modal-receta');
+    cargarRecetas();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function eliminarReceta(id, nombre) {
+  if (!confirm(`¿Eliminar la receta "${nombre}"?`)) return;
+  try {
+    await api('DELETE', `/recetas/${id}`);
+    toast('Receta eliminada.', 'success');
+    cargarRecetas();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/* ═══════ USUARIOS ═══════ */
+async function cargarUsuarios() {
+  document.getElementById('tabla-usuarios').innerHTML = '<tr><td colspan="5"><div class="loader">Cargando…</div></td></tr>';
+  try {
+    const data = await api('GET', '/usuarios');
+    const list = data.usuarios || [];
+    if (!list.length) {
+      document.getElementById('tabla-usuarios').innerHTML = '<tr><td colspan="5"><div class="empty"><span>👥</span><p>Sin usuarios</p></div></td></tr>';
+      return;
+    }
+    document.getElementById('tabla-usuarios').innerHTML = list.map(u => `
+      <tr>
+        <td><strong>${u.nombre}</strong></td>
+        <td style="color:var(--text-muted)">${u.email}</td>
+        <td>
+          <span class="badge ${u.rol === 'administrador' ? 'orange' : 'blue'}">
+            ${u.rol}
+          </span>
+        </td>
+        <td><span class="badge ${u.activo ? 'green' : 'red'}">${u.activo ? 'Activo' : 'Inactivo'}</span></td>
+        <td style="display:flex; gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="editarUsuario('${u._id}','${u.nombre}','${u.email}','${u.rol}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarUsuario('${u._id}','${u.nombre}')">🗑️</button>
+        </td>
+      </tr>`).join('');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+function abrirModalUsuario() {
+  document.getElementById('modal-usuario-title').textContent = 'Nuevo Usuario';
+  document.getElementById('usuario-id').value       = '';
+  document.getElementById('usuario-nombre').value   = '';
+  document.getElementById('usuario-email').value    = '';
+  document.getElementById('usuario-password').value = '';
+  document.getElementById('usuario-rol').value      = 'cajero';
+  document.getElementById('usuario-email').disabled = false;
+  document.getElementById('pass-hint').textContent  = '(obligatoria)';
+  abrirModal('modal-usuario');
+}
+
+function editarUsuario(id, nombre, email, rol) {
+  document.getElementById('modal-usuario-title').textContent = 'Editar Usuario';
+  document.getElementById('usuario-id').value       = id;
+  document.getElementById('usuario-nombre').value   = nombre;
+  document.getElementById('usuario-email').value    = email;
+  document.getElementById('usuario-password').value = '';
+  document.getElementById('usuario-rol').value      = rol;
+  document.getElementById('usuario-email').disabled = true;
+  document.getElementById('pass-hint').textContent  = '(dejar vacío para no cambiar)';
+  abrirModal('modal-usuario');
+}
+
+async function guardarUsuario() {
+  const id       = document.getElementById('usuario-id').value;
+  const nombre   = document.getElementById('usuario-nombre').value.trim();
+  const email    = document.getElementById('usuario-email').value.trim();
+  const password = document.getElementById('usuario-password').value;
+  const rol      = document.getElementById('usuario-rol').value;
+
+  if (!nombre) return toast('El nombre es obligatorio.', 'error');
+
+  const body = { nombre, rol };
+  if (!id) {
+    if (!email || !password) return toast('Email y contraseña son obligatorios.', 'error');
+    body.email    = email;
+    body.password = password;
+  } else {
+    if (password) body.password = password;
+  }
+
+  try {
+    if (id) {
+      await api('PUT', `/usuarios/${id}`, body);
+      toast('Usuario actualizado.', 'success');
+    } else {
+      await api('POST', '/usuarios', body);
+      toast('Usuario creado.', 'success');
+    }
+    cerrarModal('modal-usuario');
+    cargarUsuarios();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+async function eliminarUsuario(id, nombre) {
+  if (!confirm(`¿Eliminar al usuario "${nombre}"?`)) return;
+  try {
+    await api('DELETE', `/usuarios/${id}`);
+    toast('Usuario eliminado.', 'success');
+    cargarUsuarios();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/* ─── CERRAR MODAL AL CLICK FUERA ─── */
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) cerrarModal(ov.id); });
+});
+
+/* ─── INIT ─────────────────────────── */
+loadDashboard();
+</script>
+</body>
+</html>

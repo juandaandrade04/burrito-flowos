@@ -1,0 +1,329 @@
+{
+  "info": {
+    "name": "Burrito FlowOS — API v1",
+    "_postman_id": "burrito-flowos-2026",
+    "description": "Colección completa de endpoints para el sistema Burrito FlowOS. Importar en Postman, configurar la variable base_url y ejecutar primero el request de Login para obtener el token JWT automáticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000/api/v1", "type": "string" },
+    { "key": "token",    "value": "",                             "type": "string" },
+    { "key": "insumo_id","value": "",                             "type": "string" },
+    { "key": "receta_id","value": "",                             "type": "string" },
+    { "key": "venta_id", "value": "",                             "type": "string" },
+    { "key": "usuario_id","value": "",                            "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Login — Administrador",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "if (r.token) { pm.collectionVariables.set('token', r.token); pm.test('Token guardado', () => pm.expect(r.token).to.be.a('string')); }"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@burritoflowos.com\",\n  \"password\": \"Admin123!\"\n}" }
+          }
+        },
+        {
+          "name": "Login — Cajero",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "if (r.token) { pm.collectionVariables.set('token', r.token); }"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"cajero@burritoflowos.com\",\n  \"password\": \"Cajero123!\"\n}" }
+          }
+        },
+        {
+          "name": "Login — Credenciales inválidas (401)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@burritoflowos.com\",\n  \"password\": \"contraseña_mala\"\n}" }
+          }
+        },
+        {
+          "name": "Perfil del usuario autenticado",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/perfil",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/logout",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Insumos",
+      "item": [
+        {
+          "name": "GET Listar todos los insumos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/insumos",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Insumos con alerta de stock",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/insumos?alerta=true", "query": [{ "key": "alerta", "value": "true" }] },
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Buscar insumo por nombre",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/insumos?nombre=cerdo", "query": [{ "key": "nombre", "value": "cerdo" }] },
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Insumo sin token (401)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/insumos"
+          }
+        },
+        {
+          "name": "POST Crear nuevo insumo",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "if (r.insumo_id) pm.collectionVariables.set('insumo_id', r.insumo_id);"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/insumos",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Salsa verde\",\n  \"cantidad_actual\": 800,\n  \"unidad_medida\": \"ml\",\n  \"stock_minimo\": 100\n}" }
+          }
+        },
+        {
+          "name": "PUT Actualizar insumo",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/insumos/{{insumo_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"cantidad_actual\": 1200,\n  \"stock_minimo\": 150\n}" }
+          }
+        },
+        {
+          "name": "DELETE Eliminar insumo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/insumos/{{insumo_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "DELETE Insumo inexistente (404)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/insumos/000000000000000000000000",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Recetas",
+      "item": [
+        {
+          "name": "GET Listar recetas",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "if (r.recetas && r.recetas.length > 0) pm.collectionVariables.set('receta_id', r.recetas[0]._id);"
+          ]}}],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/recetas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Receta por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/recetas/{{receta_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "POST Crear receta",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/recetas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Burrito Picante\",\n  \"precio\": 11000,\n  \"descripcion\": \"Burrito con jalapeños y salsa roja\",\n  \"ingredientes\": [\n    { \"insumo\": \"REEMPLAZAR_CON_ID_INSUMO\", \"cantidad\": 200, \"unidad\": \"gr\" }\n  ]\n}" }
+          }
+        },
+        {
+          "name": "DELETE Eliminar receta",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/recetas/{{receta_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧾 Ventas",
+      "item": [
+        {
+          "name": "POST Registrar venta — Burrito Sabanero",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "if (r.venta_id) pm.collectionVariables.set('venta_id', r.venta_id);"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/ventas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo_burrito\": \"Sabanero\",\n  \"es_combo\": false,\n  \"cantidad\": 2\n}" }
+          }
+        },
+        {
+          "name": "POST Registrar venta — Burrito Veggie Combo",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/ventas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo_burrito\": \"Veggie\",\n  \"es_combo\": true,\n  \"cantidad\": 1\n}" }
+          }
+        },
+        {
+          "name": "POST Venta — stock insuficiente (422)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/ventas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo_burrito\": \"Sabanero\",\n  \"es_combo\": false,\n  \"cantidad\": 99999\n}" }
+          }
+        },
+        {
+          "name": "POST Venta — burrito inexistente (404)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/ventas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipo_burrito\": \"Burrito Fantasma\",\n  \"es_combo\": false,\n  \"cantidad\": 1\n}" }
+          }
+        },
+        {
+          "name": "GET Listar ventas",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ventas",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Ventas filtradas por fecha",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/ventas?desde=2026-01-01&hasta=2026-12-31", "query": [
+              { "key": "desde", "value": "2026-01-01" },
+              { "key": "hasta", "value": "2026-12-31" }
+            ]},
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Venta por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ventas/{{venta_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "DELETE Anular venta",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/ventas/{{venta_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Usuarios",
+      "item": [
+        {
+          "name": "GET Listar usuarios",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/usuarios",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "POST Crear usuario",
+          "event": [{ "listen": "test", "script": { "exec": [
+            "const r = pm.response.json();",
+            "if (r.usuario_id) pm.collectionVariables.set('usuario_id', r.usuario_id);"
+          ]}}],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/usuarios",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Mariana Amaya\",\n  \"email\": \"mariana@burritoflowos.com\",\n  \"password\": \"Mariana123!\",\n  \"rol\": \"cajero\"\n}" }
+          }
+        },
+        {
+          "name": "PUT Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/usuarios/{{usuario_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Mariana Amaya (actualizado)\",\n  \"rol\": \"cajero\"\n}" }
+          }
+        },
+        {
+          "name": "DELETE Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/usuarios/{{usuario_id}}",
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{token}}" }] }
+          }
+        },
+        {
+          "name": "GET Usuarios — sin token (401)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/usuarios"
+          }
+        }
+      ]
+    }
+  ]
+}
