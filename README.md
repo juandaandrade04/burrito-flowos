@@ -176,9 +176,9 @@ burrito-flowos/
 
 | Integrante | Rol |
 |---|---|
-| Karen Botero Sánchez | Desarrollo |
+| Julián Pulgarin | Desarrollo |
 | Mariana Amaya | Desarrollo |
 | Juan Andrade | Desarrollo |
 
-**Docente:** Andrés Felipe González Orozco  
-**Asignatura:** Computación Orientada a Servicios
+**Docente:** Andrés Atehortua   
+**Asignatura:** Programación distribuida y paralela
