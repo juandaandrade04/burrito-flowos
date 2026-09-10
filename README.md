@@ -177,8 +177,9 @@ burrito-flowos/
 | Integrante | Rol |
 |---|---|
 | Julián Pulgarin | Desarrollo |
-| Mariana Amaya | Desarrollo |
+| Alejandro Zuluaga | Desarrollo |
 | Juan Andrade | Desarrollo |
+| Julian Arenas | Desarrollo |
 
 **Docente:** Andrés Atehortua   
 **Asignatura:** Programación distribuida y paralela
