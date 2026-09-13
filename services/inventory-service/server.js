@@ -1,25 +1,17 @@
-// ─────────────────────────────────────────────
-//  Burrito FlowOS — server.js
-//  Punto de entrada principal de la aplicación
-// ─────────────────────────────────────────────
-require('dotenv').config();
+// services/inventory-service/server.js
+// ├─ Burrito FlowOS — inventory-service (Insumos)
+// Carga SIEMPRE su propio .env (independiente del cwd desde donde se invoque)
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express  = require('express');
 const cors     = require('cors');
 const morgan   = require('morgan');
-const path     = require('path');
 
 const connectDB      = require('./config/database');
 const errorHandler   = require('./middlewares/errorHandler');
-
-// Rutas
-const authRoutes     = require('./routes/auth.routes');
-const insumosProxy   = require('./middlewares/insumosProxy');
-const ventasRoutes   = require('./routes/ventas.routes');
-const recetasRoutes  = require('./routes/recetas.routes');
-const usuariosRoutes = require('./routes/usuarios.routes');
+const insumosRoutes  = require('./routes/insumos.routes');
 
 const app  = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4001;
 
 // ── Conexión a base de datos ──────────────────
 connectDB();
@@ -32,19 +24,12 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// ── Archivos estáticos (frontend) ────────────
-app.use(express.static(path.join(__dirname, 'frontend')));
-
 // ── Rutas API v1 ─────────────────────────────
-app.use('/api/v1/auth',     authRoutes);
-app.use('/api/v1/insumos',  insumosProxy);       // → inventory-service
-app.use('/api/v1/ventas',   ventasRoutes);
-app.use('/api/v1/recetas',  recetasRoutes);
-app.use('/api/v1/usuarios', usuariosRoutes);
+app.use('/api/v1/insumos', insumosRoutes);
 
-// ── Ruta raíz → frontend ─────────────────────
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+// ── Health check ──────────────────────────────
+app.get('/health', (req, res) => {
+  res.status(200).json({ servicio: 'inventory-service', estado: 'ok' });
 });
 
 // ── Ruta 404 ─────────────────────────────────
@@ -64,10 +49,10 @@ app.use(errorHandler);
 // ── Inicio del servidor ───────────────────────
 app.listen(PORT, () => {
   console.log('\n╔══════════════════════════════════════╗');
-  console.log('║        🌯  Burrito FlowOS            ║');
+  console.log('║   🌯  Burrito FlowOS + inventory      ║');
   console.log('╠══════════════════════════════════════╣');
   console.log(`║  Servidor:  http://localhost:${PORT}     ║`);
-  console.log(`║  API Base:  /api/v1/                 ║`);
+  console.log('║  API Base:  /api/v1/insumos          ║');
   console.log(`║  Entorno:   ${process.env.NODE_ENV || 'development'}               ║`);
   console.log('╚══════════════════════════════════════╝\n');
 });
