@@ -61,7 +61,7 @@ export interface Receta {
 // ── Venta ────────────────────────────────────
 export interface Venta {
   _id: string
-  usuario: string | Pick<Usuario, '_id' | 'nombre' | 'email' | 'rol'>
+  usuario: string | Pick<Usuario, '_id' | 'nombre' | 'email' | 'rol'> | null
   receta?: string
   tipo_burrito: string
   es_combo: boolean

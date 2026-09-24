@@ -290,7 +290,7 @@ export default function VentasPage() {
                     <td style={{ color: 'var(--green)', fontWeight: 600 }}>
                       {formatCOP(v.total)}
                     </td>
-                    <td>{typeof v.usuario === 'object' ? v.usuario.nombre : '—'}</td>
+                    <td>{typeof v.usuario === 'object' && v.usuario ? v.usuario.nombre : '—'}</td>
                     <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>
                       {formatFecha(v.createdAt)}
                     </td>

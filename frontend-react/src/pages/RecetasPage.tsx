@@ -208,7 +208,7 @@ export default function RecetasPage() {
                       borderBottom: '1px solid var(--border)',
                     }}
                   >
-                    <span>{typeof ing.insumo === 'object' ? ing.insumo.nombre : '—'}</span>
+                    <span>{typeof ing.insumo === 'object' && ing.insumo ? ing.insumo.nombre : '—'}</span>
                     <span style={{ color: 'var(--text)' }}>
                       {ing.cantidad} {ing.unidad}
                     </span>
