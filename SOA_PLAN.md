@@ -50,7 +50,7 @@ Un **API Gateway** (`gateway`) centralizará la entrada a `/api/v1/*`:
 - Enrutamiento HTTP por prefijo a cada servicio.
 - CORS, body parsing y formato de error unificado.
 - Verificación de JWT (delegada) y propagación de la identidad al servicio vía headers internos (`X-User-Id`, `X-User-Rol`).
-- Servicio de archivos estáticos del `frontend/`.
+- Servicio de archivos estáticos del `frontend-react/dist/` (frontend React + TypeScript).
 
 ---
 
@@ -60,9 +60,9 @@ Un **API Gateway** (`gateway`) centralizará la entrada a `/api/v1/*`:
 2. **auth-service (Auth + Usuarios)** — segundo más fácil; libera credenciales y token.
 3. **catalog-service (Recetas)** — reemplazar `populate` por copia denormalizada del nombre/unidad de insumo o consulta al inventory-service al validar ingredientes.
 4. **sales-service (Ventas)** — el último y el más complejo: orquesta a recetas e insumos.
-5. **gateway** — capa de entrada común para el frontend existente (sin cambios en el cliente).
+5. **gateway** — capa de entrada común para el frontend existente (sin cambios en el cliente React).
 
-Cada paso conserva las rutas `/api/v1/...` intactas para minimizar cambios en el frontend.
+Cada paso conserva las rutas `/api/v1/...` intactas para minimizar cambios en el frontend React.
 
 ---
 

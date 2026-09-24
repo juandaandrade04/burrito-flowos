@@ -50,20 +50,75 @@ Esto crea:
 - 12 insumos del inventario
 - 3 recetas (Sabanero, Veggie, Maicero)
 
-### 5. Iniciar el servidor
+### 5. Construir el frontend React
 
 ```bash
-npm start          # producción
+cd frontend-react
+npm install
+npm run build
+cd ..
+```
+
+El build queda en `frontend-react/dist/` y es lo que sirve Express en producción.
+
+### 6. Iniciar el servidor
+
+```bash
+npm start          # producción (sirve frontend-react/dist + API)
 npm run dev        # desarrollo con auto-reload (nodemon)
 ```
 
-### 6. Abrir la aplicación
+### 7. Abrir la aplicación
 
 | Interfaz | URL |
 |---|---|
-| Frontend (login) | http://localhost:3000 |
-| Dashboard | http://localhost:3000/dashboard.html |
+| Frontend (React + TypeScript) | http://localhost:3000 |
 | API base | http://localhost:3000/api/v1/ |
+
+> **En desarrollo con Vite**: `npm --prefix frontend-react run dev` levanta el frontend en http://localhost:5173 con proxy automático hacia la API. El monolito (`npm start`) debe estar corriendo en :3000.
+
+---
+
+## ⚛️ Frontend (React + TypeScript)
+
+El frontend fue migrado de HTML vanilla a **React + TypeScript** y vive en `frontend-react/`.
+
+- **Stack:** Vite 8, React 19, TypeScript 6, React Router (HashRouter), oxlint.
+- **Comunicación:** cliente `fetch` propio en `src/lib/api.ts` con tokens JWT desde localStorage y manejo de errores centralizado (`ApiRequestError`).
+- **Rutas protegidas:** `RequireAuth`/`RequireAdmin` (redirect a `/login` si no hay sesión; cajero sin acceso a módulos de administrador).
+- **Páginas:** Login · Dashboard (estadísticas + alertas de stock + últimas ventas) · Ventas (registro con preview de combo + historial + anular) · Insumos (CRUD) · Recetas (CRUD) · Usuarios (CRUD + roles).
+
+```
+frontend-react/
+├── index.html
+├── vite.config.ts         # Alias @, proxy /api → :3000
+├── package.json
+├── tsconfig.app.json      # paths: @/* → ./src/*
+├── dist/                  # Build de producción (servido por Express)
+└── src/
+    ├── main.tsx           # Bootstrap (ReactDOM + AuthProvider + Router)
+    ├── App.tsx            # Definición de rutas
+    ├── index.css          # Estilos globales
+    ├── types/api.ts       # Tipos: Usuario, Insumo, Receta, Venta, respuestas API
+    ├── lib/
+    │   ├── api.ts         # Cliente HTTP + manejo de errores
+    │   └── format.ts      # Moneda COP, fechas, iniciales
+    ├── context/
+    │   ├── AuthContext.tsx # Sesión, login/logout, esAdmin
+    │   └── ToastContext.tsx
+    ├── components/
+    │   ├── Layout.tsx     # Sidebar + topbar
+    │   ├── Modal.tsx
+    │   ├── RequireAuth.tsx # Guards de ruta por rol
+    │   └── ui.tsx         # Botones, inputs, badges, spinners
+    └── pages/
+        ├── LoginPage.tsx
+        ├── DashboardPage.tsx
+        ├── VentasPage.tsx
+        ├── InsumosPage.tsx
+        ├── RecetasPage.tsx
+        └── UsuariosPage.tsx
+```
 
 ---
 
@@ -87,26 +142,34 @@ burrito-flowos/
 │
 ├── controllers/
 │   ├── AuthController.js
-│   ├── InsumoController.js
 │   ├── RecetaController.js
 │   ├── VentaController.js
 │   └── UsuarioController.js
 │
 ├── routes/
 │   ├── auth.routes.js
-│   ├── insumos.routes.js
 │   ├── recetas.routes.js
 │   ├── ventas.routes.js
 │   └── usuarios.routes.js
+│
+├── services/inventory-service/   # Microservicio de inventario (insumos vía proxy)
+│   ├── controllers/InsumoController.js
+│   ├── models/Insumo.js
+│   └── ...
 │
 ├── middlewares/
 │   ├── verifyToken.js         # Autenticación JWT
 │   ├── checkRole.js           # Control de roles
 │   └── errorHandler.js        # Manejo centralizado de errores
 │
-├── frontend/
-│   ├── index.html             # Login
-│   └── dashboard.html         # Aplicación principal
+├── frontend-react/          # Frontend en React + TypeScript (Vite)
+│   ├── src/
+│   │   ├── components/       # Layout, Modal, guards, UI
+│   │   ├── context/          # Auth y Toasts
+│   │   ├── lib/              # Cliente API y formatos
+│   │   ├── pages/            # Login, Dashboard, Ventas, Insumos, Recetas, Usuarios
+│   │   └── types/            # Tipos de la API
+│   └── dist/                 # Build de producción (servido por Express)
 │
 └── BurritoFlowOS_Postman.json  # Colección de pruebas
 ```
@@ -122,7 +185,7 @@ burrito-flowos/
 | POST | `/auth/logout` | Sí | Cierra sesión |
 | GET | `/auth/perfil` | Sí | Perfil del usuario actual |
 
-### Insumos
+### Insumos (vía inventory-service, proxy `/api/v1/insumos`)
 | Método | Endpoint | Rol | Descripción |
 |---|---|---|---|
 | GET | `/insumos` | Admin/Cajero | Listar insumos (soporta `?nombre=` y `?alerta=true`) |
@@ -130,6 +193,8 @@ burrito-flowos/
 | POST | `/insumos` | Admin | Crear insumo |
 | PUT | `/insumos/:id` | Admin | Actualizar insumo |
 | DELETE | `/insumos/:id` | Admin | Eliminar insumo (soft delete) |
+
+> El dominio de inventario vive en `services/inventory-service`; el monolito redirige `/api/v1/insumos` a ese servicio mediante `middlewares/insumosProxy.js`.
 
 ### Ventas
 | Método | Endpoint | Rol | Descripción |
