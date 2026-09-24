@@ -32,8 +32,10 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// ── Archivos estáticos (frontend) ────────────
-app.use(express.static(path.join(__dirname, 'frontend')));
+// ── Frontend (React) ──────────────────────────
+// El build de React vive en frontend-react/dist (generado con `npm --prefix frontend-react run build`).
+const DIR_FRONTEND = path.join(__dirname, 'frontend-react', 'dist');
+app.use(express.static(DIR_FRONTEND));
 
 // ── Rutas API v1 ─────────────────────────────
 app.use('/api/v1/auth',     authRoutes);
@@ -42,9 +44,9 @@ app.use('/api/v1/ventas',   ventasRoutes);
 app.use('/api/v1/recetas',  recetasRoutes);
 app.use('/api/v1/usuarios', usuariosRoutes);
 
-// ── Ruta raíz → frontend ─────────────────────
+// ── Ruta raíz → frontend (React SPA) ─────────
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+  res.sendFile(path.join(DIR_FRONTEND, 'index.html'));
 });
 
 // ── Ruta 404 ─────────────────────────────────
