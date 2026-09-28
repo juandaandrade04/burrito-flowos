@@ -201,6 +201,7 @@ burrito-flowos/
 |---|---|---|---|
 | POST | `/ventas` | Admin/Cajero | Registrar venta y descontar insumos automáticamente |
 | GET | `/ventas` | Admin | Historial de ventas (soporta `?desde=` `?hasta=` `?tipo_burrito=`) |
+| GET | `/ventas/reporte` | Admin | Reporte PDF del período (soporta `?mes=AAAA-MM` o `?desde=` `?hasta=`; sin parámetros usa el mes actual) |
 | GET | `/ventas/:id` | Admin | Detalle de una venta |
 | DELETE | `/ventas/:id` | Admin | Anular venta y revertir insumos |
 
