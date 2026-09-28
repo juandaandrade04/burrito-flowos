@@ -157,6 +157,11 @@ burrito-flowos/
 │   ├── models/Insumo.js
 │   └── ...
 │
+├── services/auth-service/        # Microservicio de autenticación (auth vía proxy)
+│   ├── controllers/AuthController.js
+│   ├── models/Usuario.js
+│   └── ...
+│
 ├── middlewares/
 │   ├── verifyToken.js         # Autenticación JWT
 │   ├── checkRole.js           # Control de roles
@@ -184,6 +189,8 @@ burrito-flowos/
 | POST | `/auth/login` | No | Inicia sesión y devuelve JWT |
 | POST | `/auth/logout` | Sí | Cierra sesión |
 | GET | `/auth/perfil` | Sí | Perfil del usuario actual |
+
+> El dominio de autenticación vive en `services/auth-service`; el monolito redirige `/api/v1/auth` a ese servicio mediante `middlewares/authProxy.js`.
 
 ### Insumos (vía inventory-service, proxy `/api/v1/insumos`)
 | Método | Endpoint | Rol | Descripción |
