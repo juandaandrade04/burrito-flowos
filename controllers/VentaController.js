@@ -2,6 +2,7 @@
 const Venta  = require('../models/Venta');
 const Receta = require('../models/Receta');
 const Insumo = require('../models/Insumo');
+const PDFDocument = require('pdfkit');
 
 // ── POST /api/v1/ventas ───────────────────────
 exports.registrar = async (req, res, next) => {
@@ -144,6 +145,140 @@ exports.listar = async (req, res, next) => {
       estadisticas: stats[0] || { total_ventas: 0, total_burritos: 0 },
       ventas
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ── GET /api/v1/ventas/reporte — PDF del período ──
+exports.reporteMes = async (req, res, next) => {
+  try {
+    const { mes, desde, hasta } = req.query;
+
+    // Calcular rango: prioridad desde/hasta, luego mes=YYYY-MM, sino mes actual
+    let inicio;
+    let fin;
+    if (desde && hasta) {
+      // Parsear desde en partes locales: new Date("YYYY-MM-DD") es UTC y puede correr el mes en zonas negativas
+      const [an, me, di] = desde.split('-').map(Number);
+      inicio = new Date(an, me - 1, di);
+      fin    = new Date(hasta + 'T23:59:59');
+    } else if (mes && /^\d{4}-\d{2}$/.test(mes)) {
+      const [y, m] = mes.split('-').map(Number);
+      inicio = new Date(y, m - 1, 1);
+      fin    = new Date(y, m, 0, 23, 59, 59);
+    } else {
+      const ahora = new Date();
+      inicio = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+      fin    = new Date(ahora.getFullYear(), ahora.getMonth() + 1, 0, 23, 59, 59);
+    }
+
+    const ventas = await Venta.find({ anulada: false, createdAt: { $gte: inicio, $lte: fin } })
+      .populate('usuario', 'nombre email rol')
+      .sort({ createdAt: 1 });
+
+    const totalVentas   = ventas.reduce((s, v) => s + (v.total || 0), 0);
+    const totalBurritos = ventas.reduce((s, v) => s + (v.cantidad || 0), 0);
+
+    const NOMBRES_MESES = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    const etiquetaMes = `${NOMBRES_MESES[inicio.getMonth()]} ${inicio.getFullYear()}`;
+    const nombreArchivo = `reporte_ventas_${inicio.getFullYear()}-${String(inicio.getMonth() + 1).padStart(2, '0')}.pdf`;
+
+    const formatearCOP = (n) =>
+      new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(n || 0);
+
+    const formatoFecha = (f) =>
+      new Date(f).toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+    const doc = new PDFDocument({ size: 'A4', margin: 40 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+    doc.pipe(res);
+
+    // ── Encabezado ──
+    doc.fontSize(20).fillColor('#E85D3D').text('Burrito FlowOS', { align: 'center' });
+    doc.moveDown(0.3);
+    doc.fontSize(14).fillColor('#111111').text(`Reporte de Ventas — ${etiquetaMes}`, { align: 'center' });
+    doc.moveDown(0.3);
+    doc.fontSize(10).fillColor('#666666')
+      .text(`Generado: ${formatoFecha(new Date())}  |  Ventas no anuladas`, { align: 'center' });
+    doc.moveDown();
+
+    // ── Tabla de ventas ──
+    const COLUMNAS = [
+      { label: '#',       ancho: 26,  align: 'center' },
+      { label: 'Fecha',   ancho: 92,  align: 'left'   },
+      { label: 'Burrito', ancho: 125, align: 'left'   },
+      { label: 'Cant.',   ancho: 34,  align: 'center' },
+      { label: 'Combo',   ancho: 46,  align: 'center' },
+      { label: 'Total',   ancho: 88,  align: 'right'  },
+      { label: 'Cajero',  ancho: 88,  align: 'left'   }
+    ];
+    const anchoTotal = COLUMNAS.reduce((s, c) => s + c.ancho, 0);
+    const startX = 40;
+
+    const dibujarFila = (datos, filaIdx) => {
+      const y = doc.y;
+      if (y > 700) {
+        doc.addPage();
+        dibujarFila(datos, filaIdx);
+        return;
+      }
+      if (filaIdx % 2 === 0) {
+        doc.rect(startX, y, anchoTotal, 18).fill('#F5F0EB');
+      }
+      doc.fillColor('#111111').fontSize(9);
+      let x = startX;
+      datos.forEach((txt, i) => {
+        const col = COLUMNAS[i];
+        doc.text(String(txt), x + 4, y + 5, { width: col.ancho - 8, align: col.align });
+        x += col.ancho;
+      });
+      doc.moveTo(startX, y + 18).lineTo(startX + anchoTotal, y + 18).strokeColor('#DDDDDD').stroke();
+      doc.y = y + 18;
+    };
+
+    // Cabecera de tabla
+    const yHeader = doc.y;
+    doc.rect(startX, yHeader, anchoTotal, 20).fill('#E85D3D');
+    doc.fillColor('#FFFFFF').fontSize(10);
+    let xH = startX;
+    COLUMNAS.forEach((c) => {
+      doc.text(c.label, xH + 4, yHeader + 6, { width: c.ancho - 8, align: c.align });
+      xH += c.ancho;
+    });
+    doc.y = yHeader + 20;
+
+    if (ventas.length === 0) {
+      doc.fillColor('#999999').fontSize(11).text('No hay ventas registradas en este período.', { align: 'center' });
+    } else {
+      ventas.forEach((v, i) => {
+        dibujarFila([
+          i + 1,
+          formatoFecha(v.createdAt),
+          v.tipo_burrito,
+          v.cantidad,
+          v.es_combo ? 'Sí' : 'No',
+          formatearCOP(v.total),
+          (v.usuario && v.usuario.nombre) || '—'
+        ], i);
+      });
+    }
+
+    // ── Resumen ──
+    doc.moveDown();
+    doc.rect(startX, doc.y, anchoTotal, 26).fill('#C9E4CA');
+    doc.fillColor('#111111').fontSize(11);
+    doc.text(
+      `Ventas del periodo: ${ventas.length}   |   Burritos vendidos: ${totalBurritos}   |   Ingreso total: ${formatearCOP(totalVentas)}`,
+      startX + 10, doc.y + 8, { width: anchoTotal - 20, align: 'left' }
+    );
+
+    doc.end();
   } catch (err) {
     next(err);
   }

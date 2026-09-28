@@ -45,3 +45,32 @@ export async function api<T>(
   }
   return data
 }
+
+// Descarga un archivo binario (PDF, etc.) autenticado y dispara el guardado en el navegador.
+export async function apiDownload(path: string, filename: string): Promise<void> {
+  const token = localStorage.getItem('bflow_token')
+  const opts: RequestInit = {
+    method: 'GET',
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, opts)
+  if (!res.ok) {
+    const data = (await res.json().catch(() => ({}))) as ApiError
+    throw new ApiRequestError(
+      data.error?.codigo ?? res.status,
+      data.error?.mensaje ?? 'Error desconocido',
+      data.error,
+    )
+  }
+
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}

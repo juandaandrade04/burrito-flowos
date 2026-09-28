@@ -12,6 +12,9 @@ router.post('/',    checkRole('administrador', 'cajero'), VentaCtrl.registrar);
 // GET  /api/v1/ventas        → solo admin
 router.get('/',     checkRole('administrador'), VentaCtrl.listar);
 
+// GET  /api/v1/ventas/reporte → solo admin (PDF por mes)
+router.get('/reporte', checkRole('administrador'), VentaCtrl.reporteMes);
+
 // GET  /api/v1/ventas/:id
 router.get('/:id',  checkRole('administrador'), VentaCtrl.obtener);
 
