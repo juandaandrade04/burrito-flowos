@@ -8,7 +8,9 @@
     "dev": "nodemon server.js",
     "seed": "node config/seed.js",
     "service:inventory": "node services/inventory-service/server.js",
-    "service:inventory:dev": "nodemon services/inventory-service/server.js"
+    "service:inventory:dev": "nodemon services/inventory-service/server.js",
+    "service:recetas": "node services/recetas-service/server.js",
+    "service:recetas:dev": "nodemon services/recetas-service/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
