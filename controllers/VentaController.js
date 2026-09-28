@@ -159,7 +159,9 @@ exports.reporteMes = async (req, res, next) => {
     let inicio;
     let fin;
     if (desde && hasta) {
-      inicio = new Date(desde);
+      // Parsear desde en partes locales: new Date("YYYY-MM-DD") es UTC y puede correr el mes en zonas negativas
+      const [an, me, di] = desde.split('-').map(Number);
+      inicio = new Date(an, me - 1, di);
       fin    = new Date(hasta + 'T23:59:59');
     } else if (mes && /^\d{4}-\d{2}$/.test(mes)) {
       const [y, m] = mes.split('-').map(Number);
