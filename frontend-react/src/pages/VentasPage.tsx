@@ -2,7 +2,7 @@
 //  Ventas: registro de venta + historial + anular
 // ─────────────────────────────────────────────
 import { useCallback, useEffect, useState } from 'react'
-import { api } from '@/lib/api'
+import { api, apiDownload } from '@/lib/api'
 import type { Receta, RecetasResponse, Venta, VentasResponse } from '@/types/api'
 import { useToast } from '@/context/ToastContext'
 import { useAuth } from '@/context/AuthContext'
@@ -34,6 +34,7 @@ export default function VentasPage() {
   const [desde, setDesde] = useState('')
   const [hasta, setHasta] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [descargando, setDescargando] = useState(false)
 
   const cargarVentas = useCallback(
     async (fDesde = desde, fHasta = hasta) => {
@@ -122,6 +123,35 @@ export default function VentasPage() {
       cargarVentas()
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Error anulando venta', 'error')
+    }
+  }
+
+  // Rellena el filtro con el primer y último día del mes actual
+  const filtrarMesActual = () => {
+    const hoy = new Date()
+    const primeraParte = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`
+    const desdeMes = `${primeraParte}-01`
+    const hastaMes = `${primeraParte}-${new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate()}`
+    setDesde(desdeMes)
+    setHasta(hastaMes)
+    cargarVentas(desdeMes, hastaMes)
+  }
+
+  // Descarga el PDF del período visible (mes actual por defecto)
+  const descargarPDF = async () => {
+    setDescargando(true)
+    try {
+      let qs = ''
+      const hoy = new Date()
+      const desdeF = desde || `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`
+      const hastaF = hasta || `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0).getDate()}`
+      qs += `?desde=${desdeF}&hasta=${hastaF}`
+      await apiDownload(`/ventas/reporte${qs}`, `reporte_ventas.pdf`)
+      toast('Reporte descargado.')
+    } catch (e) {
+      toast(e instanceof Error ? e.message : 'Error generando el reporte', 'error')
+    } finally {
+      setDescargando(false)
     }
   }
 
@@ -249,6 +279,16 @@ export default function VentasPage() {
               />
               <button className="btn btn-secondary btn-sm" onClick={() => cargarVentas()}>
                 🔍 Filtrar
+              </button>
+              <button className="btn btn-secondary btn-sm" onClick={filtrarMesActual}>
+                📅 Último mes
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={descargarPDF}
+                disabled={descargando}
+              >
+                {descargando ? '⏳ Generando…' : '📄 Descargar PDF'}
               </button>
             </div>
           )}
