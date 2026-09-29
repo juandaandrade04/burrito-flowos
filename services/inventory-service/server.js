@@ -49,7 +49,7 @@ app.use(errorHandler);
 // ── Inicio del servidor ───────────────────────
 app.listen(PORT, () => {
   console.log('\n╔══════════════════════════════════════╗');
-  console.log('║   🌯  Burrito FlowOS + inventory      ║');
+  console.log('║   🌯  Burrito FlowOS + inventory     ║');
   console.log('╠══════════════════════════════════════╣');
   console.log(`║  Servidor:  http://localhost:${PORT}     ║`);
   console.log('║  API Base:  /api/v1/insumos          ║');
