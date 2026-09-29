@@ -41,7 +41,7 @@
 | **auth-service** (Identidad) | `/auth/*`, `/usuarios/*` | Usuarios, login, JWT | Listo para extraer |
 | **inventory-service** (Insumos) | `/insumos/*` | Inventario, stock, alertas | **Extracción inmediata** |
 | **catalog-service** (Recetas) | `/recetas/*` | Menú, ingredientes | Necesita adaptación |
-| **sales-service** (Ventas) | `/ventas/*` | Ventas, anulaciones, estadísticas | Requiere saga |
+| **sales-service** (Ventas) | `/ventas/*` | Ventas, anulaciones, estadísticas | Proceso extraído en puerto 4004; BD compartida, saga pendiente |
 
 ### 3.1 API Gateway
 
@@ -59,7 +59,7 @@ Un **API Gateway** (`gateway`) centralizará la entrada a `/api/v1/*`:
 1. **inventory-service (Insumos)** — cero dependencias, riesgo mínimo. Liberar el dominio de inventario.
 2. **auth-service (Auth + Usuarios)** — segundo más fácil; libera credenciales y token.
 3. **catalog-service (Recetas)** — reemplazar `populate` por copia denormalizada del nombre/unidad de insumo o consulta al inventory-service al validar ingredientes.
-4. **sales-service (Ventas)** — el último y el más complejo: orquesta a recetas e insumos.
+4. **sales-service (Ventas)** — proceso extraído en `services/sales-service/` sobre el puerto 4004. El desacople de datos y la saga con inventario siguen pendientes.
 5. **gateway** — capa de entrada común para el frontend existente (sin cambios en el cliente React).
 
 Cada paso conserva las rutas `/api/v1/...` intactas para minimizar cambios en el frontend React.
@@ -70,7 +70,7 @@ Cada paso conserva las rutas `/api/v1/...` intactas para minimizar cambios en el
 
 ### 5.1 Transaccionalidad venta + stock (crítico)
 
-`VentaController.registrar` ejecuta de forma atómica: buscar receta → verificar stock → descontar insumos → guardar venta. Al separar Ventas de Insumos, esa atomicidad se pierde.
+`VentaController.registrar` busca receta, verifica stock, descuenta insumos y guarda la venta mediante escrituras secuenciales; no usa una transacción Mongo. El servicio extraído comparte actualmente la base `burrito_flowos`, así que todavía consulta directamente las colecciones de recetas e insumos. Migrar esos dominios a bases independientes requiere una saga o una estrategia de compensación.
 
 **Opción A — Saga (compensación):**
 1. Sales-service solicita reserva de stock al inventory-service.
@@ -129,7 +129,7 @@ Cada servicio es una app Express independiente con su propio `package.json`, `.e
 
 - [x] Crear `services/inventory-service/` con `server.js`, `models/Insumo.js`, `controllers/InsumoController.js`, `routes/insumos.routes.js`.
 - [x] Reutilizar `middlewares/verifyToken.js` y `checkRole.js` (o delegar al Gateway).
-- [x] Configurar BD propia (`MONGO_URI=.../burrito_insumos`) y `.env`.
+- [ ] Migrar a BD propia (`MONGO_URI=.../burrito_insumos`); actualmente comparte `burrito_flowos` en Docker Compose.
 - [x] Mantener la interfaz `/api/v1/insumos` idéntica a la actual.
 - [x] Redirigir `/api/v1/insumos/*` en el monolith (o en el Gateway) hacia el nuevo servicio.
 
@@ -137,3 +137,14 @@ Cada servicio es una app Express independiente con su propio `package.json`, `.e
 > puerto 4001. El monolith redirige `/api/v1/insumos/*` al servicio vía
 > `middlewares/insumosProxy.js`. Verificado end-to-end (GET/POST/DELETE por el proxy).
 > Comandos: `npm run service:inventory` + `npm run dev`.
+
+## 8. Extracción de ventas (sales-service)
+
+- [x] Mover controlador, modelo y rutas de ventas a `services/sales-service/`.
+- [x] Exponer `/api/v1/ventas/*` en el puerto 4004 con JWT y control de roles.
+- [x] Mantener el gateway en el monolito y reenviar JSON y PDF mediante `middlewares/ventasProxy.js`.
+- [x] Añadir arranque local y servicio `sales-service` a Docker Compose.
+- [ ] Separar la base de datos y reemplazar accesos directos a `Receta`/`Insumo` por APIs de dominio.
+- [ ] Implementar reserva y compensación de stock (saga) antes de separar las bases.
+
+> **Progreso (2026-09-28):** extracción de proceso completada y build/configuración validados. El servicio comparte por ahora `MONGO_URI` con el monolito y mantiene la lógica actual de descuentos; no es todavía un desacople de datos ni una transacción distribuida.
