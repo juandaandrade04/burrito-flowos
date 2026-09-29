@@ -137,19 +137,16 @@ burrito-flowos/
 ├── models/
 │   ├── Usuario.js
 │   ├── Insumo.js
-│   ├── Receta.js
-│   └── Venta.js
+│   └── Receta.js
 │
 ├── controllers/
 │   ├── AuthController.js
 │   ├── RecetaController.js
-│   ├── VentaController.js
 │   └── UsuarioController.js
 │
 ├── routes/
 │   ├── auth.routes.js
 │   ├── recetas.routes.js
-│   ├── ventas.routes.js
 │   └── usuarios.routes.js
 │
 ├── services/inventory-service/   # Microservicio de inventario (insumos vía proxy)
@@ -162,9 +159,19 @@ burrito-flowos/
 │   ├── models/Usuario.js
 │   └── ...
 │
+├── services/recetas-service/      # Microservicio de recetas (puerto 4003)
+│   └── ...
+│
+├── services/sales-service/        # Microservicio de ventas (puerto 4004)
+│   ├── controllers/VentaController.js
+│   ├── models/Venta.js
+│   ├── routes/ventas.routes.js
+│   └── server.js
+│
 ├── middlewares/
 │   ├── verifyToken.js         # Autenticación JWT
 │   ├── checkRole.js           # Control de roles
+│   ├── ventasProxy.js         # Proxy /api/v1/ventas → puerto 4004
 │   └── errorHandler.js        # Manejo centralizado de errores
 │
 ├── frontend-react/          # Frontend en React + TypeScript (Vite)
@@ -211,6 +218,8 @@ burrito-flowos/
 | GET | `/ventas/reporte` | Admin | Reporte PDF del período (soporta `?mes=AAAA-MM` o `?desde=` `?hasta=`; sin parámetros usa el mes actual) |
 | GET | `/ventas/:id` | Admin | Detalle de una venta |
 | DELETE | `/ventas/:id` | Admin | Anular venta y revertir insumos |
+
+Estas rutas se ejecutan en `services/sales-service` (puerto `4004`). El monolito conserva `/api/v1/ventas` y reenvía las respuestas, incluidos los reportes PDF. Para desarrollo local, inicia `npm run service:sales` y `npm start` en terminales separadas. El servicio requiere su `.env` basado en `services/sales-service/.env.example`.
 
 ### Recetas
 | Método | Endpoint | Rol | Descripción |

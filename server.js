@@ -15,7 +15,7 @@ const errorHandler   = require('./middlewares/errorHandler');
 const authProxy      = require('./middlewares/authProxy');
 const insumosProxy   = require('./middlewares/insumosProxy');
 const recetasProxy   = require('./middlewares/recetasProxy');
-const ventasRoutes   = require('./routes/ventas.routes');
+const ventasProxy    = require('./middlewares/ventasProxy');
 const usuariosRoutes = require('./routes/usuarios.routes');
 
 const app  = express();
@@ -40,7 +40,7 @@ app.use(express.static(DIR_FRONTEND));
 // ── Rutas API v1 ─────────────────────────────
 app.use('/api/v1/auth',     authProxy);          // → auth-service
 app.use('/api/v1/insumos',  insumosProxy);       // → inventory-service
-app.use('/api/v1/ventas',   ventasRoutes);
+app.use('/api/v1/ventas',   ventasProxy);        // → sales-service
 app.use('/api/v1/recetas',  recetasProxy);       // → recetas-service
 app.use('/api/v1/usuarios', usuariosRoutes);
 
