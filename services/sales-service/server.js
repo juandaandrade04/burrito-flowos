@@ -43,8 +43,13 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`[sales-service] Servidor: http://localhost:${PORT}`);
-  console.log('[sales-service] API Base: /api/v1/ventas');
+  console.log('\n╔══════════════════════════════════════╗');
+  console.log('║   🌯  Burrito FlowOS + sales         ║');
+  console.log('╠══════════════════════════════════════╣');
+  console.log(`║  Servidor:  http://localhost:${PORT}     ║`);
+  console.log('║  API Base:  /api/v1/ventas           ║');
+  console.log(`║  Entorno:   ${process.env.NODE_ENV || 'development'}               ║`);
+  console.log('╚══════════════════════════════════════╝\n');
 });
 
 module.exports = app;
