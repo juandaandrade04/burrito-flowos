@@ -134,45 +134,37 @@ burrito-flowos/
 │   ├── database.js            # Conexión MongoDB
 │   └── seed.js                # Datos iniciales
 │
-├── models/
+├── models/                     # Solo utilizados por config/seed.js
 │   ├── Usuario.js
 │   ├── Insumo.js
 │   └── Receta.js
 │
 ├── controllers/
-│   ├── AuthController.js
-│   ├── RecetaController.js
 │   └── UsuarioController.js
 │
 ├── routes/
-│   ├── auth.routes.js
-│   ├── recetas.routes.js
 │   └── usuarios.routes.js
 │
-├── services/inventory-service/   # Microservicio de inventario (insumos vía proxy)
-│   ├── controllers/InsumoController.js
-│   ├── models/Insumo.js
+├── services/inventory-service/   # Microservicio de inventario (puerto 4001)
 │   └── ...
 │
-├── services/auth-service/        # Microservicio de autenticación (auth vía proxy)
-│   ├── controllers/AuthController.js
-│   ├── models/Usuario.js
+├── services/auth-service/        # Microservicio de autenticación (puerto 4002)
 │   └── ...
 │
-├── services/recetas-service/      # Microservicio de recetas (puerto 4003)
+├── services/recetas-service/     # Microservicio de recetas (puerto 4003)
 │   └── ...
 │
-├── services/sales-service/        # Microservicio de ventas (puerto 4004)
-│   ├── controllers/VentaController.js
-│   ├── models/Venta.js
-│   ├── routes/ventas.routes.js
-│   └── server.js
+├── services/sales-service/       # Microservicio de ventas (puerto 4004)
+│   └── ...
 │
 ├── middlewares/
 │   ├── verifyToken.js         # Autenticación JWT
 │   ├── checkRole.js           # Control de roles
-│   ├── ventasProxy.js         # Proxy /api/v1/ventas → puerto 4004
-│   └── errorHandler.js        # Manejo centralizado de errores
+│   ├── errorHandler.js        # Manejo centralizado de errores
+│   ├── authProxy.js           # Proxy /api/v1/auth → puerto 4002
+│   ├── insumosProxy.js        # Proxy /api/v1/insumos → puerto 4001
+│   ├── recetasProxy.js        # Proxy /api/v1/recetas → puerto 4003
+│   └── ventasProxy.js         # Proxy /api/v1/ventas → puerto 4004
 │
 ├── frontend-react/          # Frontend en React + TypeScript (Vite)
 │   ├── src/
