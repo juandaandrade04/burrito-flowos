@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────
 import { useCallback, useEffect, useState } from 'react'
 import { api, apiDownload } from '@/lib/api'
+import { confirmar } from '@/lib/alerts'
 import type { Receta, RecetasResponse, Venta, VentasResponse } from '@/types/api'
 import { useToast } from '@/context/ToastContext'
 import { useAuth } from '@/context/AuthContext'
@@ -116,7 +117,7 @@ export default function VentasPage() {
   }
 
   const anular = async (id: string) => {
-    if (!window.confirm('¿Anular esta venta? Los insumos serán devueltos al inventario.')) return
+    if (!(await confirmar('¿Anular esta venta? Los insumos serán devueltos al inventario.'))) return
     try {
       await api('DELETE', `/ventas/${id}`)
       toast('Venta anulada e insumos devueltos.')
