@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
+import { confirmar } from '@/lib/alerts'
 import type { Rol, Usuario, UsuariosResponse } from '@/types/api'
 import { useToast } from '@/context/ToastContext'
 import { Modal } from '@/components/Modal'
@@ -90,7 +91,7 @@ export default function UsuariosPage() {
   }
 
   const eliminar = async (u: Usuario) => {
-    if (!window.confirm(`¿Eliminar al usuario "${u.nombre}"?`)) return
+    if (!(await confirmar(`¿Eliminar al usuario "${u.nombre}"?`))) return
     try {
       await api('DELETE', `/usuarios/${u._id}`)
       toast('Usuario eliminado.')
@@ -147,9 +148,11 @@ export default function UsuariosPage() {
                       <button className="btn btn-secondary btn-sm" onClick={() => abrirEditar(u)}>
                         ✏️
                       </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => eliminar(u)}>
-                        🗑️
-                      </button>
+                      {u.rol !== 'administrador' && (
+                        <button className="btn btn-danger btn-sm" onClick={() => eliminar(u)}>
+                          🗑️
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

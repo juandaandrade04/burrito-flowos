@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
+import { confirmar } from '@/lib/alerts'
 import type { Insumo, InsumosResponse, Unidad } from '@/types/api'
 import { useToast } from '@/context/ToastContext'
 import { useAuth } from '@/context/AuthContext'
@@ -103,7 +104,7 @@ export default function InsumosPage() {
   }
 
   const eliminar = async (ins: Insumo) => {
-    if (!window.confirm(`¿Eliminar el insumo "${ins.nombre}"?`)) return
+    if (!(await confirmar(`¿Eliminar el insumo "${ins.nombre}"?`))) return
     try {
       await api('DELETE', `/insumos/${ins._id}`)
       toast('Insumo eliminado.')

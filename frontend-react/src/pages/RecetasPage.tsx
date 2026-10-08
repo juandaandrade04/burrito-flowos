@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
+import { confirmar } from '@/lib/alerts'
 import type { Insumo, InsumosResponse, Receta, RecetasResponse, Unidad } from '@/types/api'
 import { useToast } from '@/context/ToastContext'
 import { useAuth } from '@/context/AuthContext'
@@ -115,7 +116,7 @@ export default function RecetasPage() {
   }
 
   const eliminar = async (r: Receta) => {
-    if (!window.confirm(`¿Eliminar la receta "${r.nombre}"?`)) return
+    if (!(await confirmar(`¿Eliminar la receta "${r.nombre}"?`))) return
     try {
       await api('DELETE', `/recetas/${r._id}`)
       toast('Receta eliminada.')

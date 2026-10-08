@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { iniciales } from '@/lib/format'
+import { alertaSesionCerrada } from '@/lib/alerts'
 
 interface Pagina {
   ruta: string
@@ -32,7 +33,8 @@ export default function Layout() {
 
   const manejarLogout = async () => {
     await logout()
-    navigate('/login')
+    navigate('/login', { replace: true })
+    await alertaSesionCerrada()
   }
 
   return (
