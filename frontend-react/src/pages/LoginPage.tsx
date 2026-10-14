@@ -7,7 +7,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 
 export default function LoginPage() {
-  const { token, login } = useAuth()
+  const { autenticado, cargando: cargandoSesion, login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [email, setEmail] = useState('')
@@ -17,7 +17,17 @@ export default function LoginPage() {
 
   const destino = (location.state as { from?: string } | null)?.from ?? '/dashboard'
 
-  if (token) {
+  if (cargandoSesion) {
+    return (
+      <div className="login-page">
+        <div className="login-card">
+          <p>Cargando…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (autenticado) {
     return <Navigate to="/dashboard" replace />
   }
 
@@ -76,15 +86,34 @@ export default function LoginPage() {
           />
         </div>
 
-        <button className="login-btn" type="submit" disabled={cargando}>
+        <button className="login-btn" type="submit" disabled={cargando || cargandoSesion}>
           {cargando ? 'Iniciando sesión…' : 'Iniciar sesión'}
         </button>
 
-        <p className="login-hint">
-          Demo admin: admin@burritoflowos.com / Admin123!
-          <br />
-          Demo cajero: cajero@burritoflowos.com / Cajero123!
-        </p>
+        <div className="login-hint">
+          <button
+            type="button"
+            className="login-hint-item"
+            onClick={() => {
+              setEmail('admin@burritoflowos.com')
+              setPassword('Admin123!')
+              setError('')
+            }}
+          >
+            Demo admin: admin@burritoflowos.com / Admin123!
+          </button>
+          <button
+            type="button"
+            className="login-hint-item"
+            onClick={() => {
+              setEmail('cajero@burritoflowos.com')
+              setPassword('Cajero123!')
+              setError('')
+            }}
+          >
+            Demo cajero: cajero@burritoflowos.com / Cajero123!
+          </button>
+        </div>
       </form>
     </div>
   )

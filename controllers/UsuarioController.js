@@ -57,6 +57,14 @@ exports.crear = async (req, res, next) => {
 // ── PUT /api/v1/usuarios/:id ──────────────────
 exports.actualizar = async (req, res, next) => {
   try {
+    // No permitir que un admin cambie su propio rol
+    // (evita auto-revocarse los privilegios por error).
+    if (req.params.id === req.usuario.id && req.body.rol && req.body.rol !== req.usuario.rol) {
+      return res.status(400).json({
+        error: { codigo: 400, mensaje: 'No puedes cambiar tu propio rol.' }
+      });
+    }
+
     const campos = {};
     if (req.body.nombre) campos.nombre = req.body.nombre;
     if (req.body.rol)    campos.rol    = req.body.rol;

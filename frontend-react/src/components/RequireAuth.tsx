@@ -5,11 +5,22 @@ import type { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 
+function Cargando() {
+  return (
+    <div className="login-page">
+      <div className="login-card">
+        <p>Cargando…</p>
+      </div>
+    </div>
+  )
+}
+
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { token } = useAuth()
+  const { autenticado, cargando } = useAuth()
   const location = useLocation()
 
-  if (!token) {
+  if (cargando) return <Cargando />
+  if (!autenticado) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
 
@@ -17,10 +28,11 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 }
 
 export function RequireAdmin({ children }: { children: ReactNode }) {
-  const { token, esAdmin } = useAuth()
+  const { autenticado, cargando, esAdmin } = useAuth()
   const location = useLocation()
 
-  if (!token) {
+  if (cargando) return <Cargando />
+  if (!autenticado) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
   if (!esAdmin) {
