@@ -10,6 +10,8 @@ const path     = require('path');
 
 const connectDB      = require('./config/database');
 const errorHandler   = require('./middlewares/errorHandler');
+const sessionMW      = require('./middlewares/sessionConfig');
+const sessionGuard   = require('./middlewares/sessionGuard');
 
 // Rutas
 const authProxy      = require('./middlewares/authProxy');
@@ -28,6 +30,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(sessionMW); // express-session: controla el inicio de sesión
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -38,11 +41,11 @@ const DIR_FRONTEND = path.join(__dirname, 'frontend-react', 'dist');
 app.use(express.static(DIR_FRONTEND));
 
 // ── Rutas API v1 ─────────────────────────────
-app.use('/api/v1/auth',     authProxy);          // → auth-service
-app.use('/api/v1/insumos',  insumosProxy);       // → inventory-service
-app.use('/api/v1/ventas',   ventasProxy);        // → sales-service
-app.use('/api/v1/recetas',  recetasProxy);       // → recetas-service
-app.use('/api/v1/usuarios', usuariosRoutes);
+app.use('/api/v1/auth',     authProxy);          // → auth-service (login/logout gestionan la sesión)
+app.use('/api/v1/insumos',  sessionGuard, insumosProxy);       // → inventory-service
+app.use('/api/v1/ventas',   sessionGuard, ventasProxy);        // → sales-service
+app.use('/api/v1/recetas',  sessionGuard, recetasProxy);       // → recetas-service
+app.use('/api/v1/usuarios', sessionGuard, usuariosRoutes);
 
 // ── Ruta raíz → frontend (React SPA) ─────────
 app.get('/', (req, res) => {
