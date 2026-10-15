@@ -6,6 +6,7 @@ import { api } from '@/lib/api'
 import { confirmar } from '@/lib/alerts'
 import type { Rol, Usuario, UsuariosResponse } from '@/types/api'
 import { useToast } from '@/context/ToastContext'
+import { useAuth } from '@/context/AuthContext'
 import { Modal } from '@/components/Modal'
 import { Badge, Empty, Loader } from '@/components/ui'
 
@@ -21,11 +22,14 @@ const FORM_VACIO: FormState = { id: '', nombre: '', email: '', password: '', rol
 
 export default function UsuariosPage() {
   const { toast } = useToast()
+  const { usuario: usuarioActual } = useAuth()
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [cargando, setCargando] = useState(true)
   const [modal, setModal] = useState(false)
   const [form, setForm] = useState<FormState>(FORM_VACIO)
   const [guardando, setGuardando] = useState(false)
+
+  const esPropiaCuenta = (id: string) => id === usuarioActual?.id
 
   const cargar = useCallback(async () => {
     setCargando(true)
@@ -61,6 +65,10 @@ export default function UsuariosPage() {
     }
     if (esNuevo && (!form.email.trim() || !form.password)) {
       toast('Email y contraseña son obligatorios.', 'error')
+      return
+    }
+    if (!esNuevo && esPropiaCuenta(form.id) && form.rol !== usuarioActual?.rol) {
+      toast('No puedes cambiar tu propio rol.', 'error')
       return
     }
 
@@ -214,11 +222,17 @@ export default function UsuariosPage() {
               <select
                 className="input input-full"
                 value={form.rol}
+                disabled={Boolean(form.id) && esPropiaCuenta(form.id)}
                 onChange={(e) => setForm({ ...form, rol: e.target.value as Rol })}
               >
                 <option value="cajero">Cajero</option>
                 <option value="administrador">Administrador</option>
               </select>
+              {Boolean(form.id) && esPropiaCuenta(form.id) && (
+                <span style={{ color: 'var(--text-muted)', fontSize: 10 }}>
+                  No puedes cambiar tu propio rol.
+                </span>
+              )}
             </div>
           </div>
         </div>

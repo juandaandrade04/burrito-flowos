@@ -17,12 +17,10 @@ export class ApiRequestError extends Error {
   }
 }
 
+// Cabeceras comunes. El token ya no viaja desde el navegador: la autenticación
+// se resuelve con la cookie de sesión HttpOnly que el gateway adjunta sola.
 export function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('bflow_token')
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  }
+  return { 'Content-Type': 'application/json' }
 }
 
 export async function api<T>(
@@ -30,7 +28,11 @@ export async function api<T>(
   path: string,
   body?: unknown,
 ): Promise<T> {
-  const opts: RequestInit = { method, headers: authHeaders() }
+  const opts: RequestInit = {
+    method,
+    headers: authHeaders(),
+    credentials: 'same-origin', // envía la cookie de sesión
+  }
   if (body !== undefined) opts.body = JSON.stringify(body)
 
   const res = await fetch(`${API_BASE}${path}`, opts)
@@ -48,10 +50,9 @@ export async function api<T>(
 
 // Descarga un archivo binario (PDF, etc.) autenticado y dispara el guardado en el navegador.
 export async function apiDownload(path: string, filename: string): Promise<void> {
-  const token = localStorage.getItem('bflow_token')
   const opts: RequestInit = {
     method: 'GET',
-    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    credentials: 'same-origin', // envía la cookie de sesión
   }
 
   const res = await fetch(`${API_BASE}${path}`, opts)

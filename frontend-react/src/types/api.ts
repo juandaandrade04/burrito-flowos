@@ -19,6 +19,7 @@ export interface ApiError {
 // ── Usuario ──────────────────────────────────
 export interface Usuario {
   _id: string
+  id?: string
   nombre: string
   email: string
   rol: Rol
@@ -81,7 +82,6 @@ export interface Estadisticas {
 // ── Respuestas de la API ─────────────────────
 export interface LoginResponse {
   mensaje: string
-  token: string
   usuario: Usuario
   expira_en: string
 }

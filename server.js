@@ -12,6 +12,7 @@ const connectDB      = require('./config/database');
 const errorHandler   = require('./middlewares/errorHandler');
 const sessionMW      = require('./middlewares/sessionConfig');
 const sessionGuard   = require('./middlewares/sessionGuard');
+const injectToken    = require('./middlewares/injectSessionToken');
 
 // Rutas
 const authProxy      = require('./middlewares/authProxy');
@@ -34,6 +35,10 @@ app.use(sessionMW); // express-session: controla el inicio de sesión
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// El JWT de la sesión se inyecta en la cabecera Authorization para que los
+// microservicios y las rutas locales lo verifiquen sin venir del navegador.
+app.use(injectToken);
 
 // ── Frontend (React) ──────────────────────────
 // El build de React vive en frontend-react/dist (generado con `npm --prefix frontend-react run build`).
