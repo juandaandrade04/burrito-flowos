@@ -79,6 +79,79 @@ npm run dev        # desarrollo con auto-reload (nodemon)
 
 ---
 
+## 🐳 Despliegue con Docker Compose
+
+Docker Compose levanta MongoDB, el gateway, los cuatro microservicios y el frontend en contenedores separados. El frontend queda disponible en `http://localhost:8080`; solo el frontend publica un puerto en el host.
+
+1. Copiar `.env.example` a `.env` y reemplazar `JWT_SECRET` por una clave larga y aleatoria. En PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+2. Desde la raíz del proyecto, construir y arrancar todo:
+
+```bash
+docker compose up --build
+```
+
+3. En otra terminal, cargar los datos iniciales:
+
+```bash
+docker compose exec api-gateway npm run seed
+```
+
+> **Atención:** el seed borra y vuelve a crear las colecciones de usuarios, insumos y recetas. Úsalo solo en una base de datos local nueva o cuando quieras reiniciar esos datos.
+
+MongoDB guarda sus datos en el volumen `mongo_data`. Para detener los contenedores sin borrar los datos, ejecutar `docker compose down`.
+
+---
+
+## ☸️ Despliegue en Kubernetes
+
+Los manifiestos de `k8s/` despliegan MongoDB con un PersistentVolumeClaim, los cuatro microservicios, el gateway y el frontend. Los servicios internos son `ClusterIP`; el acceso al frontend se hace con `kubectl port-forward`. Esta configuración de MongoDB sin autenticación está pensada para desarrollo/local, no para producción.
+
+1. Construir las cinco imágenes locales desde la raíz:
+
+```bash
+docker build -t burrito-flowos/api-gateway:local -f Dockerfile .
+docker build -t burrito-flowos/auth-service:local -f Dockerfile.service --build-arg SERVICE_DIR=services/auth-service .
+docker build -t burrito-flowos/inventory-service:local -f Dockerfile.service --build-arg SERVICE_DIR=services/inventory-service .
+docker build -t burrito-flowos/recetas-service:local -f Dockerfile.service --build-arg SERVICE_DIR=services/recetas-service .
+docker build -t burrito-flowos/sales-service:local -f Dockerfile.service --build-arg SERVICE_DIR=services/sales-service .
+docker build -t burrito-flowos/frontend:local -f frontend-react/Dockerfile frontend-react
+```
+
+Usa un clúster local que pueda acceder a las imágenes de Docker del host. Con Minikube o Kind, carga las imágenes en el clúster usando `minikube image load` o `kind load docker-image`.
+
+2. Crear el namespace y el Secret JWT. En PowerShell:
+
+```powershell
+kubectl apply -f k8s/namespace.yaml
+$jwt = [guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')
+kubectl create secret generic burrito-flowos-secrets -n burrito-flowos --from-literal="JWT_SECRET=$jwt"
+```
+
+3. Aplicar los manifiestos, esperar a que los pods estén listos y abrir el frontend:
+
+```bash
+kubectl apply -k k8s
+kubectl get pods -n burrito-flowos
+kubectl port-forward -n burrito-flowos svc/frontend 8080:80
+```
+
+Abre `http://localhost:8080`. Para cargar los datos iniciales:
+
+```bash
+kubectl exec -n burrito-flowos deployment/api-gateway -- npm run seed
+```
+
+> **Atención:** el seed borra y vuelve a crear las colecciones de usuarios, insumos y recetas. Úsalo solo en una base de datos local nueva o cuando quieras reiniciar esos datos.
+
+El clúster debe tener una StorageClass por defecto para aprovisionar el volumen de MongoDB. El Secret JWT se crea fuera de los manifiestos para evitar guardar credenciales en el repositorio.
+
+---
+
 ## ⚛️ Frontend (React + TypeScript)
 
 El frontend fue migrado de HTML vanilla a **React + TypeScript** y vive en `frontend-react/`.
