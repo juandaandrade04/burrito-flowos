@@ -20,12 +20,10 @@ const insumosProxy   = require('./middlewares/insumosProxy');
 const recetasProxy   = require('./middlewares/recetasProxy');
 const ventasProxy    = require('./middlewares/ventasProxy');
 const usuariosRoutes = require('./routes/usuarios.routes');
+const dashboardGraphql = require('./routes/dashboard.graphql');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
-
-// ── Conexión a base de datos ──────────────────
-connectDB();
 
 // ── Middlewares globales ──────────────────────
 app.use(cors());
@@ -56,6 +54,9 @@ app.use('/api/v1/ventas',   sessionGuard, ventasProxy);        // → sales-serv
 app.use('/api/v1/recetas',  sessionGuard, recetasProxy);       // → recetas-service
 app.use('/api/v1/usuarios', sessionGuard, usuariosRoutes);
 
+// GraphQL: Nginx reenvía /api/ al gateway igual que para REST.
+app.post('/api/graphql', sessionGuard, dashboardGraphql);
+
 // ── Ruta raíz → frontend (React SPA) ─────────
 app.get('/', (req, res) => {
   res.sendFile(path.join(DIR_FRONTEND, 'index.html'));
@@ -76,14 +77,17 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // ── Inicio del servidor ───────────────────────
-app.listen(PORT, () => {
-  console.log('\n╔══════════════════════════════════════╗');
-  console.log('║        🌯  Burrito FlowOS            ║');
-  console.log('╠══════════════════════════════════════╣');
-  console.log(`║  Servidor:  http://localhost:${PORT}     ║`);
-  console.log(`║  API Base:  /api/v1/                 ║`);
-  console.log(`║  Entorno:   ${process.env.NODE_ENV || 'development'}               ║`);
-  console.log('╚══════════════════════════════════════╝\n');
-});
+if (require.main === module) {
+  connectDB();
+  app.listen(PORT, () => {
+    console.log('\n╔══════════════════════════════════════╗');
+    console.log('║        🌯  Burrito FlowOS            ║');
+    console.log('╠══════════════════════════════════════╣');
+    console.log(`║  Servidor:  http://localhost:${PORT}     ║`);
+    console.log(`║  API Base:  /api/v1/                 ║`);
+    console.log(`║  Entorno:   ${process.env.NODE_ENV || 'development'}               ║`);
+    console.log('╚══════════════════════════════════════╝\n');
+  });
+}
 
 module.exports = app;

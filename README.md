@@ -105,6 +105,16 @@ docker compose exec api-gateway npm run seed
 
 MongoDB guarda sus datos en el volumen `mongo_data`. Para detener los contenedores sin borrar los datos, ejecutar `docker compose down`.
 
+### Demostración: GraphQL detrás de Nginx
+
+1. Con Docker Compose en marcha, abre `http://localhost:8080`, inicia sesión como administrador y entra al tablero. Si la base es nueva, carga los datos iniciales primero; registra una venta de prueba si quieres ver datos en «Últimas ventas».
+2. Abre las herramientas del navegador en **Red (Network)**, filtra por `graphql` y recarga el tablero. Selecciona `POST /api/graphql`: en **Payload** verás la consulta `Dashboard` y en **Response** sus datos de inventario y ventas.
+3. Si repites la prueba como cajero, la consulta devuelve el inventario, pero `ventasHoy` es `null`. Sin sesión, el gateway responde `401`.
+
+**Flujo:** React → Nginx → gateway Express (`/api/graphql`) → servicios REST de inventario y ventas. Nginx sirve React y reenvía `/api/`; GraphQL se ejecuta en Express, no en Nginx. Solo el tablero usa GraphQL; las demás pantallas mantienen REST.
+
+Para probar la ruta del gateway sin Docker ni MongoDB, ejecuta `npm ci` y `npm test` desde la raíz. La prueba usa los middlewares reales de sesión y simula los servicios REST.
+
 ---
 
 ## ☸️ Despliegue en Kubernetes
