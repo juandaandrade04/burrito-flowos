@@ -48,6 +48,27 @@ export async function api<T>(
   return data
 }
 
+export async function graphql<T>(query: string): Promise<T> {
+  const res = await fetch('/api/graphql', {
+    method: 'POST',
+    headers: authHeaders(),
+    credentials: 'same-origin',
+    body: JSON.stringify({ query }),
+  })
+  const result = (await res.json().catch(() => ({}))) as Partial<ApiError> & {
+    data?: T
+    errors?: { message: string }[]
+  }
+
+  if (!res.ok || result.errors?.length || result.data == null) {
+    throw new ApiRequestError(
+      res.ok ? 502 : res.status,
+      result.errors?.[0]?.message ?? result.error?.mensaje ?? 'Error cargando el dashboard',
+    )
+  }
+  return result.data
+}
+
 // Descarga un archivo binario (PDF, etc.) autenticado y dispara el guardado en el navegador.
 export async function apiDownload(path: string, filename: string): Promise<void> {
   const opts: RequestInit = {

@@ -127,9 +127,9 @@ exports.listar = async (req, res, next) => {
       .skip(skip)
       .limit(Number(limit));
 
-    // Estadísticas básicas
+    // Totales de todo el rango consultado, no solo de la página de resultados.
     const stats = await Venta.aggregate([
-      { $match: { anulada: false } },
+      { $match: filtro },
       { $group: {
           _id:            null,
           total_ventas:   { $sum: '$total' },
