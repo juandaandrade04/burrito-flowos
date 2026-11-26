@@ -40,6 +40,10 @@ if (process.env.NODE_ENV === 'development') {
 // microservicios y las rutas locales lo verifiquen sin venir del navegador.
 app.use(injectToken);
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ servicio: 'api-gateway', estado: 'ok' });
+});
+
 // ── Frontend (React) ──────────────────────────
 // El build de React vive en frontend-react/dist (generado con `npm --prefix frontend-react run build`).
 const DIR_FRONTEND = path.join(__dirname, 'frontend-react', 'dist');
