@@ -73,7 +73,7 @@
 > “Acá ya tengo el mapa de calor, una grabación real y el dashboard con clics muertos, clics de rabia y tiempo en página.  
 > `[Completa con tu observación real: zona más clicada, si hay clics de rabia y cuánto tiempo permanece el usuario en el Login.]`
 
-> “ como mejora de usabilidad, `[escribe la recomendación concreta, por ejemplo: resaltar más el botón de ingreso o validar el correo antes de enviar]`.”
+> “Como mejora de usabilidad, `[escribe la recomendación concreta, por ejemplo: resaltar más el botón de ingreso o validar el correo antes de enviar]`.”
 
 **Opción B — si sigue en ‘¡Casi terminamos!’:**
 
