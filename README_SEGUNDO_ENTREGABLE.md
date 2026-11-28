@@ -144,7 +144,7 @@ Además del spider sobre la raíz, el script registra tráfico real del formular
 4. Website URL (túnel público levantado):
 
 ```text
-https://jacob-editor-could-travels.trycloudflare.com
+https://quad-scene-ceremony-world.trycloudflare.com
 ```
 
 5. Se copió el Project ID `zkk57nzpdj` y se integró en `frontend-react/index.html`.
@@ -158,7 +158,7 @@ cloudflared tunnel --url http://localhost:3000
 **URL final del túnel (verificada con `200 OK`):**
 
 ```text
-https://jacob-editor-could-travels.trycloudflare.com/#/login
+https://quad-scene-ceremony-world.trycloudflare.com/#/login
 ```
 
 Esta es la URL que se comparte con el grupo para generar sesiones reales desde PC y celular. Las sesiones del script automático pueden ser descartadas por Clarity como bot, por eso es importante que varias personas interactúen manualmente.
@@ -196,7 +196,7 @@ https://scripts.clarity.ms/.../clarity.js    → 200
 https://r.clarity.ms/collect                 → 204 (múltiples eventos)
 ```
 
-En la corrida en vivo por `https://jacob-editor-could-travels.trycloudflare.com` se registraron 8 respuestas: 3 con estado 200, 2 redirecciones 302 y 3 envíos 204 a `/collect`, guardadas en `evidencia-red-vivo.json`.
+En la corrida en vivo por `https://quad-scene-ceremony-world.trycloudflare.com` se registraron 8 respuestas: 3 con estado 200, 2 redirecciones 302 y 3 envíos 204 a `/collect`, guardadas en `evidencia-red-vivo.json`.
 
 ### Sobre el dashboard visual
 

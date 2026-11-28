@@ -1,6 +1,6 @@
 {
-  "fecha": "2026-11-28T06:51:34.311Z",
-  "url": "https://jacob-editor-could-travels.trycloudflare.com",
+  "fecha": "2026-11-28T12:15:11.078Z",
+  "url": "https://quad-scene-ceremony-world.trycloudflare.com",
   "projectId": "zkk57nzpdj",
   "peticiones": [
     {
@@ -8,31 +8,31 @@
       "status": 200
     },
     {
-      "url": "https://scripts.clarity.ms/0.8.80-beta/clarity.js",
+      "url": "https://scripts.clarity.ms/0.8.77/clarity.js",
       "status": 200
+    },
+    {
+      "url": "https://u.clarity.ms/collect",
+      "status": 204
+    },
+    {
+      "url": "https://u.clarity.ms/collect",
+      "status": 204
     },
     {
       "url": "https://c.clarity.ms/c.gif",
       "status": 302
     },
     {
-      "url": "https://g.clarity.ms/collect",
-      "status": 204
-    },
-    {
-      "url": "https://c.bing.com/c.gif?ctsa=mr&CtsSyncId=73A6DBEF44F44DC4A06725B93A8037F3&RedC=c.clarity.ms&MXFR=272A27503F9A675E0A9C3F4F3B9A69CC",
+      "url": "https://c.bing.com/c.gif?ctsa=mr&CtsSyncId=9785892F4E754E3A808FDE6D9E97FDBE&RedC=c.clarity.ms&MXFR=0DB31799614A6A412CE60F86654A64C4",
       "status": 302
     },
     {
-      "url": "https://c.clarity.ms/c.gif?ctsa=mr&CtsSyncId=73A6DBEF44F44DC4A06725B93A8037F3&MUID=2D43BDD3D4176F762C8CA5CCD56C6E22",
+      "url": "https://c.clarity.ms/c.gif?ctsa=mr&CtsSyncId=9785892F4E754E3A808FDE6D9E97FDBE&MUID=3A24BBDC4ED369A106F2A3C34FA86847",
       "status": 200
     },
     {
-      "url": "https://g.clarity.ms/collect",
-      "status": 204
-    },
-    {
-      "url": "https://g.clarity.ms/collect",
+      "url": "https://u.clarity.ms/collect",
       "status": 204
     }
   ]

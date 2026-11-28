@@ -30,7 +30,7 @@ from generar_documento_word import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = Path(os.environ.get("GUIA_OUT") or ROOT / "GUIA_PRUEBAS_EN_VIVO.docx")
-TUNNEL = "https://jacob-editor-could-travels.trycloudflare.com/#/login"
+TUNNEL = "https://quad-scene-ceremony-world.trycloudflare.com/#/login"
 
 
 def leer(doc, texto, color=AZUL_CLARO):
@@ -65,7 +65,7 @@ def titulo(doc):
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = p.add_run("JMeter · Microsoft Clarity · OWASP ZAP")
+    r = p.add_run("Playwright · Robot/SeleniumLibrary · JMeter · Clarity · ZAP")
     r.font.size = Pt(12)
     r.font.color.rgb = RGBColor.from_string("595959")
 
@@ -104,7 +104,7 @@ def antes(doc):
         doc,
         ["Momento", "Qué hacer", "Tiempo"],
         [
-            ["1", "Mostrar la app y hacer login manual", "1 min"],
+            ["1", "Automatización: Playwright y Robot en vivo", "3 min"],
             ["2", "Ejecutar JMeter y abrir el dashboard", "2 min"],
             ["3", "Clarity en vivo con F12 → Network", "2 min"],
             ["4", "Ejecutar ZAP y abrir el reporte", "2 min"],
@@ -114,8 +114,70 @@ def antes(doc):
     )
 
 
+def automatizacion(doc):
+    doc.add_heading("1. Automatización en vivo (Entregable 1)", level=1)
+    doc.add_paragraph(
+        "Mostramos los mismos tres casos con dos tecnologías independientes: Playwright "
+        "(código JavaScript sobre Chromium) y Robot Framework con SeleniumLibrary "
+        "(palabras clave sobre Chrome/Selenium)."
+    )
+    tabla(
+        doc,
+        ["#", "Caso", "Resultado esperado"],
+        [
+            ["1", "Login correcto", "Redirección a #/dashboard y texto 'Dashboard'"],
+            ["2", "Contraseña incorrecta", "Mensaje 'Credenciales incorrectas.'"],
+            ["3", "Campos vacíos", "Mensaje 'Por favor completa todos los campos.'"],
+        ],
+        anchos=[0.5, 2.3, 3.9],
+    )
+
+    doc.add_heading("Preparación (solo la primera vez)", level=2)
+    codigo(
+        doc,
+        "cd <raíz del proyecto>\n"
+        "npm install\n"
+        "npx playwright install chromium\n"
+        "python -m pip install -r tests/robot/requirements.txt",
+    )
+    nota(doc, "SeleniumLibrary necesita Google Chrome instalado; Selenium Manager descarga el driver.", VERDE)
+
+    doc.add_heading("Playwright en vivo", level=2)
+    codigo(
+        doc,
+        "$env:HEADED='1'; npx playwright test\n"
+        "npx playwright show-report evidence/entregable-1/playwright-report",
+    )
+    doc.add_paragraph("Resultado esperado: 3 passed, 0 failed. Capturas en evidence/entregable-1/capturas/.")
+
+    doc.add_heading("Robot Framework + SeleniumLibrary en vivo", level=2)
+    codigo(
+        doc,
+        "python -m robot --variable HEADLESS:False "
+        "--outputdir evidence/entregable-1/robot tests/robot/login.robot\n"
+        "start evidence\\entregable-1\\robot\\report.html",
+    )
+    doc.add_paragraph("Resultado esperado: 3 tests, 3 passed, 0 failed.")
+
+    leer(
+        doc,
+        "Automatizamos el Login con dos enfoques distintos. Playwright usa código JavaScript y "
+        "Chromium; Robot Framework usa palabras clave legibles con SeleniumLibrary sobre Google "
+        "Chrome. Los dos validan login correcto, credenciales inválidas y campos vacíos, y en ambos "
+        "los tres casos pasan. La evidencia son los reportes HTML y seis capturas.",
+    )
+    nota(
+        doc,
+        "Punto clave para el profesor: Robot NO usa la librería Browser ni Playwright; usa "
+        "SeleniumLibrary, así que las dos suites son tecnológicamente independientes.",
+    )
+    doc.add_paragraph(
+        "Para volver al modo silencioso después de la demo: Remove-Item Env:HEADED -ErrorAction SilentlyContinue"
+    )
+
+
 def jmeter(doc):
-    doc.add_heading("1. JMeter en vivo", level=1)
+    doc.add_heading("2. JMeter en vivo", level=1)
     doc.add_paragraph("Ejecuta desde la raíz del proyecto:")
     codigo(doc, "cd <raíz del proyecto>\nnpm run test:jmeter")
 
@@ -159,7 +221,7 @@ def jmeter(doc):
 
 
 def clarity(doc):
-    doc.add_heading("2. Microsoft Clarity en vivo", level=1)
+    doc.add_heading("3. Microsoft Clarity en vivo", level=1)
     doc.add_paragraph("URL final del túnel (mantener abierto y compartir con el grupo):")
     codigo(doc, TUNNEL)
     nota(
@@ -227,7 +289,7 @@ def clarity(doc):
 
 
 def zap(doc):
-    doc.add_heading("3. OWASP ZAP en vivo", level=1)
+    doc.add_heading("4. OWASP ZAP en vivo", level=1)
     codigo(
         doc,
         "cd <raíz del proyecto>\n"
@@ -323,11 +385,12 @@ def main():
     section.right_margin = Inches(0.85)
 
     doc.core_properties.title = "Guía rápida de pruebas en vivo — Burrito FlowOS"
-    doc.core_properties.subject = "JMeter, Microsoft Clarity y OWASP ZAP"
+    doc.core_properties.subject = "Automatización, JMeter, Microsoft Clarity y OWASP ZAP"
     pie_de_pagina(doc)
 
     titulo(doc)
     antes(doc)
+    automatizacion(doc)
     jmeter(doc)
     clarity(doc)
     zap(doc)

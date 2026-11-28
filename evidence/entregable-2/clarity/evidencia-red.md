@@ -2,7 +2,7 @@
 
 **Project ID:** `zkk57nzpdj`  
 **URL pública original:** `https://adjustments-amplifier-partner-offerings.trycloudflare.com/#/login`  
-**URL pública en vivo actual:** `https://jacob-editor-could-travels.trycloudflare.com/#/login`  
+**URL pública en vivo actual:** `https://quad-scene-ceremony-world.trycloudflare.com/#/login`  
 **Fecha:** 28/11/2026
 
 ## Verificación del snippet

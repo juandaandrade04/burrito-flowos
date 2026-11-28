@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const URL_BASE = process.env.CLARITY_URL || 'https://jacob-editor-could-travels.trycloudflare.com';
+const URL_BASE = process.env.CLARITY_URL || 'https://quad-scene-ceremony-world.trycloudflare.com';
 const SALIDA = path.resolve('evidence/entregable-2/clarity');
 
 await mkdir(SALIDA, { recursive: true });

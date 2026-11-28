@@ -703,7 +703,7 @@ def seccion5(doc):
         [
             ["Project ID", "zkk57nzpdj"],
             ["Nombre del proyecto", "Burrito FlowOS"],
-            ["URL final del túnel", "https://jacob-editor-could-travels.trycloudflare.com/#/login"],
+            ["URL final del túnel", "https://quad-scene-ceremony-world.trycloudflare.com/#/login"],
             ["Túnel", "cloudflared tunnel --url http://localhost:3000"],
             ["Snippet", "frontend-react/index.html, antes de </head>"],
             ["Recompilación", "npm --prefix frontend-react run build"],
@@ -819,7 +819,7 @@ def seccion7(doc):
         ("5. Carga JMeter (2 min)", "Ejecutar npm run test:jmeter. Explicar 20 usuarios, 3 iteraciones y 120 peticiones. Abrir el dashboard y remarcar 0 errores y el promedio de 1.46 s."),
         ("6. Hallazgo de desempeño (1 min)", "Explicar la corrida de 50 usuarios con timeouts/502 y que el cuello está en bcrypt; por eso se ajustó la carga."),
         ("7. Seguridad ZAP (2 min)", "Ejecutar npm run test:zap con ZAP_BAT definido. Mostrar resumen.json (0 altos, 3 medios, 2 bajos, 3 informativos) y el reporte HTML. Mencionar el login probado vía proxy, Missing Anti-clickjacking, CSP y X-Powered-By."),
-        ("8. Clarity (2 min)", "Mostrar el snippet en frontend-react/index.html, la URL final https://jacob-editor-could-travels.trycloudflare.com/#/login y las peticiones 200/204 de evidencia-red-vivo.json. Comentar que el grupo entró desde PC y celular y que Clarity puede descartar las sesiones del script como bot."),
+        ("8. Clarity (2 min)", "Mostrar el snippet en frontend-react/index.html, la URL final https://quad-scene-ceremony-world.trycloudflare.com/#/login y las peticiones 200/204 de evidencia-red-vivo.json. Comentar que el grupo entró desde PC y celular y que Clarity puede descartar las sesiones del script como bot."),
         ("9. Cierre (1 min)", "Mostrar la matriz de evidencias y las conclusiones."),
     ]
     tabla(doc, ["Paso", "Acción y mensaje clave"], pasos, anchos=[2.0, 4.7])
