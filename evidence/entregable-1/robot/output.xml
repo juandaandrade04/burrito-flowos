@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.5.1 (Python 3.14.4 on win32)" generated="2026-11-28T02:50:05.990790" rpa="false" schemaversion="5">
+<suite id="s1" name="Login" source="<proyecto>\tests\robot\login.robot">
+<test id="s1-t1" name="Login correcto con administrador" line="43">
+<kw name="Abrir Login" type="SETUP">
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:07.400571" level="INFO">Opening browser 'chrome' to base url 'http://localhost:3000/#/login'.</msg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<arg>options=add_argument("--headless=new");add_argument("--window-size=1365,900")</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2026-11-28T02:50:07.399907" elapsed="2.214996"/>
+</kw>
+<arg>${HEADLESS}</arg>
+<arg>Open Browser</arg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<arg>options=add_argument("--headless=new");add_argument("--window-size=1365,900")</arg>
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<status status="PASS" start="2026-11-28T02:50:07.397961" elapsed="2.217776"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<arg>not ${HEADLESS}</arg>
+<arg>Open Browser</arg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<status status="PASS" start="2026-11-28T02:50:09.617059" elapsed="0.002050"/>
+</kw>
+<kw name="Set Browser Implicit Wait" owner="SeleniumLibrary">
+<arg>${TIMEOUT}</arg>
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<status status="PASS" start="2026-11-28T02:50:09.620198" elapsed="0.007460"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>id:email</arg>
+<arg>timeout=${TIMEOUT}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-11-28T02:50:09.629040" elapsed="0.072950"/>
+</kw>
+<status status="PASS" start="2026-11-28T02:50:07.395742" elapsed="2.306655"/>
+</kw>
+<kw name="Enviar Credenciales">
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:09.704727" level="INFO">Typing text 'admin@burritoflowos.com' into text field 'id:email'.</msg>
+<arg>id:email</arg>
+<arg>${correo}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:09.704048" elapsed="0.402495"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:10.111640" level="INFO">Typing text 'Admin123!' into text field 'id:password'.</msg>
+<arg>id:password</arg>
+<arg>${clave}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:10.108345" elapsed="0.323867"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:10.435377" level="INFO">Clicking button 'css:button.login-btn'.</msg>
+<arg>css:button.login-btn</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:10.433476" elapsed="0.310971"/>
+</kw>
+<arg>${ADMIN_EMAIL}</arg>
+<arg>${ADMIN_PASSWORD}</arg>
+<status status="PASS" start="2026-11-28T02:50:09.703002" elapsed="1.042422"/>
+</kw>
+<kw name="Wait Until Page Contains Element" owner="SeleniumLibrary">
+<arg>css:main h1</arg>
+<arg>timeout=${TIMEOUT}</arg>
+<doc>Waits until the element ``locator`` appears on the current page.</doc>
+<status status="PASS" start="2026-11-28T02:50:10.746642" elapsed="0.551485"/>
+</kw>
+<kw name="Get Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:11.483491" level="INFO">${titulo} = Dashboard</msg>
+<var>${titulo}</var>
+<arg>css:main h1</arg>
+<doc>Returns the text value of the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:11.299164" elapsed="0.184594"/>
+</kw>
+<kw name="Should Be Equal" owner="BuiltIn">
+<arg>${titulo}</arg>
+<arg>Dashboard</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" start="2026-11-28T02:50:11.484508" elapsed="0.001342"/>
+</kw>
+<kw name="Get Location" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:11.504020" level="INFO">${url} = http://localhost:3000/#/dashboard</msg>
+<var>${url}</var>
+<doc>Returns the current browser window URL.</doc>
+<status status="PASS" start="2026-11-28T02:50:11.486313" elapsed="0.017879"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${url}</arg>
+<arg>/#/dashboard</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-11-28T02:50:11.504869" elapsed="0.002302"/>
+</kw>
+<kw name="Tomar Captura">
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:11.665483" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="../capturas/robot-login-ok.png"&gt;&lt;img src="../capturas/robot-login-ok.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>filename=${CAPTURAS}/${nombre}.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-11-28T02:50:11.509797" elapsed="0.155913"/>
+</kw>
+<arg>robot-login-ok</arg>
+<status status="PASS" start="2026-11-28T02:50:11.508048" elapsed="0.157938"/>
+</kw>
+<kw name="Cerrar Navegador" type="TEARDOWN">
+<kw name="Close Browser" owner="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-11-28T02:50:11.667255" elapsed="2.271078"/>
+</kw>
+<status status="PASS" start="2026-11-28T02:50:11.666568" elapsed="2.272245"/>
+</kw>
+<doc>Credenciales válidas redirigen al dashboard.</doc>
+<status status="PASS" start="2026-11-28T02:50:07.391582" elapsed="6.547758"/>
+</test>
+<test id="s1-t2" name="Login con contraseña incorrecta" line="53">
+<kw name="Abrir Login" type="SETUP">
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:13.953902" level="INFO">Opening browser 'chrome' to base url 'http://localhost:3000/#/login'.</msg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<arg>options=add_argument("--headless=new");add_argument("--window-size=1365,900")</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2026-11-28T02:50:13.952326" elapsed="2.354428"/>
+</kw>
+<arg>${HEADLESS}</arg>
+<arg>Open Browser</arg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<arg>options=add_argument("--headless=new");add_argument("--window-size=1365,900")</arg>
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<status status="PASS" start="2026-11-28T02:50:13.947773" elapsed="2.359830"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<arg>not ${HEADLESS}</arg>
+<arg>Open Browser</arg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<status status="PASS" start="2026-11-28T02:50:16.309399" elapsed="0.002685"/>
+</kw>
+<kw name="Set Browser Implicit Wait" owner="SeleniumLibrary">
+<arg>${TIMEOUT}</arg>
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<status status="PASS" start="2026-11-28T02:50:16.312950" elapsed="0.004366"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>id:email</arg>
+<arg>timeout=${TIMEOUT}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-11-28T02:50:16.318632" elapsed="0.085176"/>
+</kw>
+<status status="PASS" start="2026-11-28T02:50:13.945601" elapsed="2.458730"/>
+</kw>
+<kw name="Enviar Credenciales">
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:16.407811" level="INFO">Typing text 'admin@burritoflowos.com' into text field 'id:email'.</msg>
+<arg>id:email</arg>
+<arg>${correo}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:16.406648" elapsed="0.503319"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:16.912295" level="INFO">Typing text 'PasswordIncorrecta123!' into text field 'id:password'.</msg>
+<arg>id:password</arg>
+<arg>${clave}</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:16.911147" elapsed="0.389148"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:17.304577" level="INFO">Clicking button 'css:button.login-btn'.</msg>
+<arg>css:button.login-btn</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:17.302447" elapsed="0.298493"/>
+</kw>
+<arg>${ADMIN_EMAIL}</arg>
+<arg>${PASSWORD_MALO}</arg>
+<status status="PASS" start="2026-11-28T02:50:16.405062" elapsed="1.197442"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>css:.alert-inline.error</arg>
+<arg>timeout=${TIMEOUT}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-11-28T02:50:17.603835" elapsed="0.457920"/>
+</kw>
+<kw name="Get Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:18.128183" level="INFO">${mensaje} = Credenciales incorrectas.</msg>
+<var>${mensaje}</var>
+<arg>css:.alert-inline.error</arg>
+<doc>Returns the text value of the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:18.062415" elapsed="0.065955"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${mensaje}</arg>
+<arg>Credenciales incorrectas.</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-11-28T02:50:18.129082" elapsed="0.001509"/>
+</kw>
+<kw name="Get Location" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:18.152706" level="INFO">${url} = http://localhost:3000/#/login</msg>
+<var>${url}</var>
+<doc>Returns the current browser window URL.</doc>
+<status status="PASS" start="2026-11-28T02:50:18.131130" elapsed="0.021968"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${url}</arg>
+<arg>/#/login</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-11-28T02:50:18.154562" elapsed="0.001979"/>
+</kw>
+<kw name="Tomar Captura">
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:18.570439" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="../capturas/robot-login-invalido.png"&gt;&lt;img src="../capturas/robot-login-invalido.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>filename=${CAPTURAS}/${nombre}.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-11-28T02:50:18.158646" elapsed="0.412128"/>
+</kw>
+<arg>robot-login-invalido</arg>
+<status status="PASS" start="2026-11-28T02:50:18.157342" elapsed="0.413840"/>
+</kw>
+<kw name="Cerrar Navegador" type="TEARDOWN">
+<kw name="Close Browser" owner="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-11-28T02:50:18.572632" elapsed="2.268790"/>
+</kw>
+<status status="PASS" start="2026-11-28T02:50:18.571952" elapsed="2.270033"/>
+</kw>
+<doc>Una contraseña inválida muestra el error de credenciales.</doc>
+<status status="PASS" start="2026-11-28T02:50:13.941805" elapsed="6.900677"/>
+</test>
+<test id="s1-t3" name="Validación de campos vacíos" line="63">
+<kw name="Abrir Login" type="SETUP">
+<kw name="Run Keyword If" owner="BuiltIn">
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:20.852338" level="INFO">Opening browser 'chrome' to base url 'http://localhost:3000/#/login'.</msg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<arg>options=add_argument("--headless=new");add_argument("--window-size=1365,900")</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2026-11-28T02:50:20.851104" elapsed="2.100594"/>
+</kw>
+<arg>${HEADLESS}</arg>
+<arg>Open Browser</arg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<arg>options=add_argument("--headless=new");add_argument("--window-size=1365,900")</arg>
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<status status="PASS" start="2026-11-28T02:50:20.847897" elapsed="2.104326"/>
+</kw>
+<kw name="Run Keyword If" owner="BuiltIn">
+<arg>not ${HEADLESS}</arg>
+<arg>Open Browser</arg>
+<arg>${URL}</arg>
+<arg>${BROWSER}</arg>
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<status status="PASS" start="2026-11-28T02:50:22.953484" elapsed="0.002749"/>
+</kw>
+<kw name="Set Browser Implicit Wait" owner="SeleniumLibrary">
+<arg>${TIMEOUT}</arg>
+<doc>Sets the implicit wait value used by Selenium.</doc>
+<status status="PASS" start="2026-11-28T02:50:22.957093" elapsed="0.004561"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>id:email</arg>
+<arg>timeout=${TIMEOUT}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-11-28T02:50:22.963893" elapsed="0.092484"/>
+</kw>
+<status status="PASS" start="2026-11-28T02:50:20.846335" elapsed="2.210506"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:23.058367" level="INFO">Clicking button 'css:button.login-btn'.</msg>
+<arg>css:button.login-btn</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:23.057453" elapsed="0.334398"/>
+</kw>
+<kw name="Wait Until Element Is Visible" owner="SeleniumLibrary">
+<arg>css:.alert-inline.error</arg>
+<arg>timeout=${TIMEOUT}</arg>
+<doc>Waits until the element ``locator`` is visible.</doc>
+<status status="PASS" start="2026-11-28T02:50:23.392960" elapsed="0.073312"/>
+</kw>
+<kw name="Get Text" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:23.534840" level="INFO">${mensaje} = Por favor completa todos los campos.</msg>
+<var>${mensaje}</var>
+<arg>css:.alert-inline.error</arg>
+<doc>Returns the text value of the element identified by ``locator``.</doc>
+<status status="PASS" start="2026-11-28T02:50:23.467153" elapsed="0.067893"/>
+</kw>
+<kw name="Should Contain" owner="BuiltIn">
+<arg>${mensaje}</arg>
+<arg>Por favor completa todos los campos.</arg>
+<doc>Fails if the `container` does not contain the `item` one or more times.</doc>
+<status status="PASS" start="2026-11-28T02:50:23.535894" elapsed="0.001702"/>
+</kw>
+<kw name="Tomar Captura">
+<kw name="Capture Page Screenshot" owner="SeleniumLibrary">
+<msg time="2026-11-28T02:50:23.955831" level="INFO" html="true">&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan="3"&gt;&lt;a href="../capturas/robot-login-vacios.png"&gt;&lt;img src="../capturas/robot-login-vacios.png" width="800px"&gt;&lt;/a&gt;</msg>
+<arg>filename=${CAPTURAS}/${nombre}.png</arg>
+<doc>Takes a screenshot of the current page and embeds it into a log file.</doc>
+<status status="PASS" start="2026-11-28T02:50:23.539655" elapsed="0.416361"/>
+</kw>
+<arg>robot-login-vacios</arg>
+<status status="PASS" start="2026-11-28T02:50:23.538307" elapsed="0.417889"/>
+</kw>
+<kw name="Cerrar Navegador" type="TEARDOWN">
+<kw name="Close Browser" owner="SeleniumLibrary">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2026-11-28T02:50:23.957776" elapsed="2.334188"/>
+</kw>
+<status status="PASS" start="2026-11-28T02:50:23.956814" elapsed="2.335670"/>
+</kw>
+<doc>El formulario no permite enviar sin correo y contraseña.</doc>
+<status status="PASS" start="2026-11-28T02:50:20.844255" elapsed="5.448591"/>
+</test>
+<doc>Automatización de la pantalla de Login con Robot Framework y SeleniumLibrary.</doc>
+<status status="PASS" start="2026-11-28T02:50:05.999225" elapsed="20.296609"/>
+</suite>
+<statistics>
+<total>
+<stat pass="3" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="Login" id="s1" pass="3" fail="0" skip="0">Login</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

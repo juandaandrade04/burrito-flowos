@@ -7,5 +7,16 @@ node_modules/
 # Logs
 *.log
 
+# Archivos temporales de Office y configuración local
+~$*
+.vscode/
+
+# Archivos comprimidos generados localmente
+*.rar
+
+# Bytecode de Python
+__pycache__/
+*.pyc
+
 # Instrucciones locales del asistente (no subir)
 AGENTS.md

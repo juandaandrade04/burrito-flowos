@@ -1,0 +1,121 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1795848568506,125,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-2,text,true,,1189,151,2,2,http://localhost:3000/,109,0,80
+1795848568506,125,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-1,text,true,,1189,151,2,2,http://localhost:3000/,109,0,80
+1795848568656,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-3,text,true,,1189,151,3,3,http://localhost:3000/,9,0,3
+1795848568904,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-4,text,true,,1189,151,4,4,http://localhost:3000/,7,0,2
+1795848568639,366,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-1,text,true,,614,247,4,4,http://localhost:3000/api/v1/auth/login,365,0,0
+1795848569008,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-1,text,true,,1189,151,4,4,http://localhost:3000/,6,0,0
+1795848569156,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-5,text,true,,1189,151,5,5,http://localhost:3000/,7,0,2
+1795848568667,580,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-3,text,true,,618,247,5,5,http://localhost:3000/api/v1/auth/login,580,0,0
+1795848569249,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-3,text,true,,1189,151,5,5,http://localhost:3000/,7,0,0
+1795848569406,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-6,text,true,,1189,151,6,6,http://localhost:3000/,8,0,2
+1795848569648,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-7,text,true,,1189,151,7,7,http://localhost:3000/,8,0,2
+1795848569016,769,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-1,text,true,,610,247,7,7,http://localhost:3000/api/v1/auth/login,769,0,0
+1795848569787,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-1,text,true,,1189,151,7,7,http://localhost:3000/,6,0,0
+1795848569899,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-8,text,true,,1189,151,8,8,http://localhost:3000/,8,0,2
+1795848568639,1469,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-2,text,true,,610,247,8,8,http://localhost:3000/api/v1/auth/login,1469,0,0
+1795848570113,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-2,text,true,,1189,151,8,8,http://localhost:3000/,7,0,0
+1795848570148,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-9,text,true,,1189,151,9,9,http://localhost:3000/,9,0,2
+1795848570400,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-10,text,true,,1189,151,10,10,http://localhost:3000/,9,0,2
+1795848569258,1291,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-3,text,true,,610,247,10,10,http://localhost:3000/api/v1/auth/login,1291,0,0
+1795848569165,1388,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-5,text,true,,610,247,10,10,http://localhost:3000/api/v1/auth/login,1387,0,0
+1795848570550,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-3,text,true,,1189,151,10,10,http://localhost:3000/,9,0,0
+1795848570554,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-5,text,true,,1189,151,10,10,http://localhost:3000/,6,0,0
+1795848570650,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-11,text,true,,1189,151,11,11,http://localhost:3000/,8,0,2
+1795848570900,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-12,text,true,,1189,151,12,12,http://localhost:3000/,9,0,2
+1795848569415,1669,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-6,text,true,,612,247,12,12,http://localhost:3000/api/v1/auth/login,1669,0,0
+1795848571086,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-6,text,true,,1189,151,12,12,http://localhost:3000/,8,0,0
+1795848571149,10,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-13,text,true,,1189,151,13,13,http://localhost:3000/,10,0,2
+1795848571406,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-14,text,true,,1189,151,14,14,http://localhost:3000/,8,0,2
+1795848568913,2706,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-4,text,true,,608,247,14,14,http://localhost:3000/api/v1/auth/login,2706,0,0
+1795848569794,1829,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-1,text,true,,610,247,14,14,http://localhost:3000/api/v1/auth/login,1829,0,0
+1795848569657,1970,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-7,text,true,,608,247,13,13,http://localhost:3000/api/v1/auth/login,1969,0,0
+1795848571621,11,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-4,text,true,,1189,151,13,13,http://localhost:3000/,11,0,0
+1795848571629,5,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-7,text,true,,1189,151,13,13,http://localhost:3000/,4,0,0
+1795848571648,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-15,text,true,,1189,151,14,14,http://localhost:3000/,9,0,2
+1795848571901,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-16,text,true,,1189,151,15,15,http://localhost:3000/,8,0,2
+1795848572153,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-17,text,true,,1189,151,16,16,http://localhost:3000/,7,0,2
+1795848572401,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-18,text,true,,1189,151,17,17,http://localhost:3000/,8,0,2
+1795848570121,2338,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-2,text,true,,614,247,17,17,http://localhost:3000/api/v1/auth/login,2337,0,0
+1795848570158,2305,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-9,text,true,,612,247,17,17,http://localhost:3000/api/v1/auth/login,2303,0,0
+1795848572460,12,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-2,text,true,,1189,151,17,17,http://localhost:3000/,12,0,0
+1795848572464,10,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-9,text,true,,1189,151,17,17,http://localhost:3000/,10,0,0
+1795848570410,2098,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-10,text,true,,610,247,17,17,http://localhost:3000/api/v1/auth/login,2097,0,0
+1795848572508,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-10,text,true,,1189,151,17,17,http://localhost:3000/,6,0,0
+1795848572651,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-19,text,true,,1189,151,18,18,http://localhost:3000/,8,0,2
+1795848572897,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-20,text,true,,1189,151,19,19,http://localhost:3000/,8,0,1
+1795848570560,2774,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-3,text,true,,610,247,19,19,http://localhost:3000/api/v1/auth/login,2774,0,0
+1795848570561,2777,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-5,text,true,,608,247,18,18,http://localhost:3000/api/v1/auth/login,2777,0,0
+1795848569909,3432,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-8,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,3432,0,0
+1795848573339,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-5,text,true,,1189,151,18,18,http://localhost:3000/,8,0,0
+1795848573343,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-8,text,true,,1189,151,18,18,http://localhost:3000/,5,0,0
+1795848571095,3317,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-6,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,3317,0,0
+1795848570910,3505,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-12,text,true,,614,247,18,18,http://localhost:3000/api/v1/auth/login,3505,0,0
+1795848571160,3259,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-13,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,3258,0,0
+1795848574413,11,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-6,text,true,,1189,151,18,18,http://localhost:3000/,11,0,0
+1795848574420,5,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-13,text,true,,1189,151,18,18,http://localhost:3000/,5,0,0
+1795848574416,13,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-12,text,true,,1189,151,18,18,http://localhost:3000/,13,0,0
+1795848571416,3037,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-14,text,true,,614,247,18,18,http://localhost:3000/api/v1/auth/login,3037,0,0
+1795848574454,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-14,text,true,,1189,151,18,18,http://localhost:3000/,6,0,0
+1795848571633,3738,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-4,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,3738,0,0
+1795848571635,3740,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-7,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,3739,0,0
+1795848571658,3721,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-15,text,true,,608,247,18,18,http://localhost:3000/api/v1/auth/login,3720,0,0
+1795848572475,2912,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-9,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,2909,0,0
+1795848572515,2873,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-10,text,true,,608,247,18,18,http://localhost:3000/api/v1/auth/login,2872,0,0
+1795848572161,3231,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-17,text,true,,608,247,18,18,http://localhost:3000/api/v1/auth/login,3230,0,0
+1795848575372,24,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-4,text,true,,1189,151,18,18,http://localhost:3000/,24,0,0
+1795848575376,22,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-7,text,true,,1189,151,18,18,http://localhost:3000/,22,0,0
+1795848575382,23,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-15,text,true,,1189,151,18,18,http://localhost:3000/,22,0,0
+1795848575389,19,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-10,text,true,,1189,151,18,18,http://localhost:3000/,19,0,0
+1795848575388,22,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-9,text,true,,1189,151,18,18,http://localhost:3000/,22,0,0
+1795848575393,21,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-17,text,true,,1189,151,18,18,http://localhost:3000/,20,0,0
+1795848570660,5559,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-11,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,5559,0,0
+1795848572473,3750,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-2,text,true,,610,247,18,18,http://localhost:3000/api/v1/auth/login,3749,0,0
+1795848572660,3569,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-19,text,true,,612,247,17,17,http://localhost:3000/api/v1/auth/login,3568,0,0
+1795848576221,13,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-11,text,true,,1189,151,17,17,http://localhost:3000/,13,0,0
+1795848576230,7,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-19,text,true,,1189,151,17,17,http://localhost:3000/,6,0,0
+1795848573348,4154,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-5,text,true,,610,247,17,17,http://localhost:3000/api/v1/auth/login,4154,0,0
+1795848573350,4163,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-8,text,true,,612,247,16,16,http://localhost:3000/api/v1/auth/login,4163,0,0
+1795848572906,4611,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-20,text,true,,612,247,16,16,http://localhost:3000/api/v1/auth/login,4611,0,0
+1795848571910,5611,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-16,text,true,,610,247,16,16,http://localhost:3000/api/v1/auth/login,5610,0,0
+1795848577515,11,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-8,text,true,,1189,151,16,16,http://localhost:3000/,11,0,0
+1795848577522,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-16,text,true,,1189,151,16,16,http://localhost:3000/,6,0,0
+1795848577519,17,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-20,text,true,,1189,151,16,16,http://localhost:3000/,17,0,0
+1795848574424,4056,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-6,text,true,,612,247,16,16,http://localhost:3000/api/v1/auth/login,4056,0,0
+1795848574426,4063,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-13,text,true,,610,247,15,15,http://localhost:3000/api/v1/auth/login,4063,0,0
+1795848574430,4062,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-12,text,true,,608,247,15,15,http://localhost:3000/api/v1/auth/login,4062,0,0
+1795848574460,4036,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-14,text,true,,612,247,15,15,http://localhost:3000/api/v1/auth/login,4035,0,0
+1795848578490,14,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-13,text,true,,1189,151,15,15,http://localhost:3000/,14,0,0
+1795848578493,12,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-12,text,true,,1189,151,15,15,http://localhost:3000/,12,0,0
+1795848578497,12,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-14,text,true,,1189,151,15,15,http://localhost:3000/,12,0,0
+1795848575399,3139,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-7,text,true,,614,247,15,15,http://localhost:3000/api/v1/auth/login,3139,0,0
+1795848575405,3136,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-15,text,true,,614,247,14,14,http://localhost:3000/api/v1/auth/login,3136,0,0
+1795848578542,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-15,text,true,,1189,151,14,14,http://localhost:3000/,6,0,0
+1795848575415,3148,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-17,text,true,,608,247,14,14,http://localhost:3000/api/v1/auth/login,3148,0,0
+1795848578564,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-17,text,true,,1189,151,14,14,http://localhost:3000/,6,0,0
+1795848572410,6674,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-18,text,true,,608,247,14,14,http://localhost:3000/api/v1/auth/login,6674,0,0
+1795848575397,3698,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-4,text,true,,612,247,14,14,http://localhost:3000/api/v1/auth/login,3697,0,0
+1795848575409,3689,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-10,text,true,,616,247,13,13,http://localhost:3000/api/v1/auth/login,3689,0,0
+1795848579085,19,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-18,text,true,,1189,151,12,12,http://localhost:3000/,19,0,0
+1795848575411,3695,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-9,text,true,,612,247,12,12,http://localhost:3000/api/v1/auth/login,3691,0,0
+1795848576235,2871,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-11,text,true,,610,247,12,12,http://localhost:3000/api/v1/auth/login,2869,0,0
+1795848579107,8,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-11,text,true,,1189,151,11,11,http://localhost:3000/,7,0,0
+1795848576237,3685,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-19,text,true,,610,247,11,11,http://localhost:3000/api/v1/auth/login,3685,0,0
+1795848579923,6,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-19,text,true,,1189,151,11,11,http://localhost:3000/,6,0,0
+1795848577527,3119,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-8,text,true,,612,247,11,11,http://localhost:3000/api/v1/auth/login,3118,0,0
+1795848577529,3126,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-16,text,true,,612,247,10,10,http://localhost:3000/api/v1/auth/login,3126,0,0
+1795848577536,3122,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-20,text,true,,610,247,10,10,http://localhost:3000/api/v1/auth/login,3122,0,0
+1795848578506,2157,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-12,text,true,,608,247,10,10,http://localhost:3000/api/v1/auth/login,2157,0,0
+1795848580656,11,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-16,text,true,,1189,151,9,9,http://localhost:3000/,11,0,0
+1795848580660,9,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-20,text,true,,1189,151,9,9,http://localhost:3000/,9,0,0
+1795848578549,2138,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-15,text,true,,608,247,9,9,http://localhost:3000/api/v1/auth/login,2138,0,0
+1795848578505,2495,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-13,text,true,,610,247,8,8,http://localhost:3000/api/v1/auth/login,2495,0,0
+1795848578510,2500,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-14,text,true,,612,247,7,7,http://localhost:3000/api/v1/auth/login,2500,0,0
+1795848578570,2444,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-17,text,true,,610,247,6,6,http://localhost:3000/api/v1/auth/login,2444,0,0
+1795848579105,1911,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-18,text,true,,612,247,5,5,http://localhost:3000/api/v1/auth/login,1911,0,0
+1795848581017,5,1. GET pantalla de login,200,OK,20 usuarios concurrentes 1-18,text,true,,1189,151,5,5,http://localhost:3000/,5,0,0
+1795848579115,2236,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-11,text,true,,610,247,5,5,http://localhost:3000/api/v1/auth/login,2235,0,0
+1795848579930,1753,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-19,text,true,,608,247,4,4,http://localhost:3000/api/v1/auth/login,1752,0,0
+1795848580668,1243,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-16,text,true,,612,247,3,3,http://localhost:3000/api/v1/auth/login,1243,0,0
+1795848580670,1249,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-20,text,true,,608,247,2,2,http://localhost:3000/api/v1/auth/login,1249,0,0
+1795848581022,930,2. POST /api/v1/auth/login,200,OK,20 usuarios concurrentes 1-18,text,true,,608,247,1,1,http://localhost:3000/api/v1/auth/login,930,0,0

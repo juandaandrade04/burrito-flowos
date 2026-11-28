@@ -1,0 +1,17 @@
+{
+    "totalAlertas":  8,
+    "alertasPorRiesgo":  {
+                             "High":  0,
+                             "Medium":  3,
+                             "Low":  2,
+                             "Informational":  3
+                         },
+    "instanciasPorRiesgo":  {
+                                "High":  0,
+                                "Medium":  6,
+                                "Low":  10,
+                                "Informational":  7
+                            },
+    "nota":  "Alertas = tipos únicos del reporte; instancias = ocurrencias (campo count de cada alerta).",
+    "endpointLoginProbado":  true
+}

@@ -13,7 +13,11 @@
     "service:recetas:dev": "nodemon services/recetas-service/server.js",
     "service:sales": "node services/sales-service/server.js",
     "service:sales:dev": "nodemon services/sales-service/server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "test:e2e": "playwright test",
+    "test:robot": "python -m robot --outputdir evidence/entregable-1/robot tests/robot/login.robot",
+    "test:jmeter": "powershell -ExecutionPolicy Bypass -File tests/jmeter/run.ps1",
+    "test:zap": "powershell -ExecutionPolicy Bypass -File tests/zap/scan.ps1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -28,6 +32,7 @@
     "pdfkit": "^0.20.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "nodemon": "^3.1.0"
   }
 }
